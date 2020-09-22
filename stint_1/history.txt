@@ -1,0 +1,2 @@
+ls | wc
+echo ./ | ls | wc

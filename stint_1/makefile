@@ -1,7 +1,7 @@
 CC = gcc
 CFLAGS = -Wall -g -c
 LDFLAGS =
-OBJFILES = main.o execution.o path_related.o exec_cd.o ls.o echo.o pinfo.o reap_child.o get_history.o divide_input.o prompt.o nightswatch.o
+OBJFILES = main.o execution.o path_related.o exec_cd.o ls.o echo.o pinfo.o reap_child.o	get_history.o divide_input.o prompt.o nightswatch.o piping_exec.o
 
 TARGET = a
 
@@ -48,4 +48,8 @@ prompt.o: prompt.c
 
 nightswatch.o: nightswatch.c
 	$(CC) $(CFLAGS) nightswatch.c
+
+
+piping_exec.o: piping_exec.c
+	$(CC) $(CFLAGS) piping_exec.c
 	

@@ -16,7 +16,12 @@ void execute_command_after_format(char *cmd_input)
     unsigned long cmd_buffer_sz = 200;
     char *cmd_actual = (char *)malloc(sizeof(char) * (cmd_buffer_sz));
     strcpy(cmd_actual, cmd_input);
-    //printf("New formation to %s\n", cmd_actual);
 
-    execute_cmd(cmd_actual);
+    char *input_to_master = (char *)malloc(sizeof(char) * (cmd_buffer_sz));
+    strcpy(input_to_master, cmd_input);
+
+    populate_cmd_master(input_to_master);
+
+
+   // execute_cmd(cmd_actual);
 }

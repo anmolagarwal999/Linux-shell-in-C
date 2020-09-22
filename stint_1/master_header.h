@@ -22,6 +22,7 @@
 #include "divide_input.h"
 #include "prompt.h"
 #include "nightswatch.h"
+#include "piping_exec.h"
 
 #include <sys/types.h>
 #include <sys/wait.h>

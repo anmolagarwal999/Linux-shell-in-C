@@ -3,6 +3,8 @@
 
 void parse_cmd(char *cmd_input, struct cmd_var *ptr);
 
+
+
 void execute_cmd(char *cmd_input)
 {
     //int parse_stat = 0;
