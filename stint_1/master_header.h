@@ -1,0 +1,35 @@
+#ifndef MASTER_HEADER
+#define MASTER_HEADER
+
+#include <stdio.h>
+#include <pwd.h>
+#include <stdlib.h>
+#include <stdbool.h>
+#include <errno.h>
+#include <unistd.h> //for hostname
+#include <string.h> //for strtok
+#include <sys/types.h>
+#include <fcntl.h>
+
+#include "execution.h"
+#include "path_related.h"
+#include "exec_cd.h"
+#include "ls.h"
+#include "echo.h"
+#include "pinfo.h"
+#include "reap_child.h"
+#include "get_history.h"
+#include "divide_input.h"
+#include "prompt.h"
+#include "nightswatch.h"
+
+#include <sys/types.h>
+#include <sys/wait.h>
+#include <dirent.h>
+
+typedef long long LL;
+#define part printf("-----------------------------------------\n");
+#define part2 printf("====================================================\n");
+#define part3 printf("############################################################\n");
+
+#endif
