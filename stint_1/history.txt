@@ -1,2 +1,20 @@
+ls
 ls | wc
-echo ./ | ls | wc
+ls
+ls | wc
+ps aux | wc -l
+cat history.txt | wc -l > stuff.txt
+cat history.txt | echo
+cat history.txt
+cat history.txt | sort
+ls | head -3
+ls | head -3 | tail -1
+ls | head -3 | tail -1 > myoutput
+ls -lt | head
+du | sort -nr
+find . -type f -print | wc -l
+who
+who | wc -l
+ls -tl | tail
+who
+who | cut -c1-12

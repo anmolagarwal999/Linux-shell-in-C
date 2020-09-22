@@ -80,6 +80,7 @@ int main()
     yellow_color();
     printf("Welcome to my shell !!!\n");
     reset_color();
+    printf("pid() is main is %d\n",getpid());
 
     while (true)
     {
@@ -99,9 +100,12 @@ int main()
         ssize_t chars_read; //stores number of characters read by the getline func
         //&cmd_input needed as in case the buffer gets changed to a different loc, we need it to get updated there
         chars_read = getline(&cmd_input, &cmd_buffer_sz, stdin);
+        printf("pid is %d\n",getpid());
         if (chars_read == -1)
         {
+            
             perror("getline() error:");
+            return 0;
             //printf("WEIRD INPUT ERROR AS first char of input surprisingly had null char\n");
         }
         else
