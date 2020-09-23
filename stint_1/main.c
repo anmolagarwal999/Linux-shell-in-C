@@ -100,7 +100,7 @@ int main()
         ssize_t chars_read; //stores number of characters read by the getline func
         //&cmd_input needed as in case the buffer gets changed to a different loc, we need it to get updated there
         chars_read = getline(&cmd_input, &cmd_buffer_sz, stdin);
-        printf("pid is %d\n",getpid());
+        printf("pid terminal is %d\n",getpid());
         if (chars_read == -1)
         {
             

@@ -1,15 +1,3 @@
-ls -l / | grep 'a'[D*
-ls -l | wc
-ps aux | grep -v grep | grep conky
-ps | wc
-ps | wc | grep "root"
-ps
-ps s
-ps s | grep "usr"
-ps s | grep "opt"
-ps s | grep "*opt*"
-ps s
-ps s | grep "tty2"
 ps s
 ps s | grep tty2
 ls | head -3 | tail -1
@@ -18,3 +6,15 @@ ls | wc
 ls
 ls | wc | wc
 ls | wc
+ls
+echo hi there mom >file 
+echo hi there mon > file
+echo hi there mom < history.txt
+echo hi there < history.txt mom
+echo hello < history.txt mom
+echo hi < history.txt there mom
+ls | wc
+ls
+ls -l ./a
+ls | wc
+diff d1.txt d2.txt

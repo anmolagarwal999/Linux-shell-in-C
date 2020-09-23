@@ -39,9 +39,9 @@ struct simple_cmd
     // Number of arguments
     int simple_args_num;
     char *simple_cmd_args[100];
-    char input_file_name[50];
-    char output_file_name[50];
-     char append_file_name[50];
+    char *input_file_name;
+    char *output_file_name;
+    char *append_file_name;
 };
 
 #define bg_ptr_sz 500
