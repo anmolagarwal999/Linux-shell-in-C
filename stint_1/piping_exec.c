@@ -57,7 +57,7 @@ void populate_cmd_master(char *input_to_master)
     init_master_cmd_struct(curr_master);
     parse_cmd_for_master(input_to_master, curr_master);
     separate_piped_cmds(curr_master);
-    debug_master_cmd(curr_master);
+    //     debug_master_cmd(curr_master);
     //return;
     begin_exec(curr_master);
 }
@@ -77,7 +77,7 @@ int separate_piped_cmds(struct master_cmd *ptr)
             {
                 //pipe operator is not succeeded by space -> bad omen
                 //invalid command
-                printf("ERROR in cmd format: piping operator has not been succeeded by space\n");
+                fprintf(stderr, "ERROR in cmd format: piping operator has not been succeeded by space\n");
                 return -1;
             }
             else
@@ -101,13 +101,13 @@ int separate_piped_cmds(struct master_cmd *ptr)
 void debug_simple_cmd(struct simple_cmd *ptr)
 {
     part;
-    printf("number of tokens in simple is %d\n", ptr->simple_args_num);
+    fprintf(stderr, "number of tokens in simple is %d\n", ptr->simple_args_num);
 
-    printf("the tokens in piped cmds are \n");
+    fprintf(stderr, "the tokens in piped cmds are \n");
 
     for (int i = 0; i < ptr->simple_args_num; i++)
     {
-        printf("%s\n", ptr->simple_cmd_args[i]);
+        fprintf(stderr, "%s\n", ptr->simple_cmd_args[i]);
     }
     part;
 }
@@ -115,10 +115,10 @@ void debug_simple_cmd(struct simple_cmd *ptr)
 void debug_master_cmd(struct master_cmd *ptr)
 {
     part2;
-    printf("number of tokens in master is %d\n", ptr->master_args_num);
-    printf("number of piped_cmds in master is %d\n", ptr->number_of_piped_cmds);
+    fprintf(stderr, "number of tokens in master is %d\n", ptr->master_args_num);
+    fprintf(stderr, "number of piped_cmds in master is %d\n", ptr->number_of_piped_cmds);
 
-    printf("the piped cmds are are \n");
+    fprintf(stderr, "the piped cmds are are \n");
 
     for (int i = 0; i < ptr->number_of_piped_cmds; i++)
     {
@@ -195,7 +195,7 @@ void redirect_check(struct simple_cmd *ptr, int *stat_ptr)
 {
     int tot = ptr->simple_args_num;
     //int status_ret = 0;
-    printf("Entered for redirection checking possibility\n");
+   // fprintf(stderr, "Entered for redirection checking possibility\n");
     for (int i = 0; i < tot; i++)
     {
         if (strcmp(ptr->simple_cmd_args[i], "<") == 0)
@@ -205,7 +205,7 @@ void redirect_check(struct simple_cmd *ptr, int *stat_ptr)
                 //char* strcpy(char* destination, const char* source);
                 ptr->input_file_name = (char *)malloc(sizeof(char) * 30);
                 strcpy(ptr->input_file_name, ptr->simple_cmd_args[i + 1]);
-                printf("name of input file is %s\n", ptr->input_file_name);
+                // fprintf(stderr,"name of input file is %s\n", ptr->input_file_name);
             }
             stat_ptr[0] = 1;
         }
@@ -217,7 +217,7 @@ void redirect_check(struct simple_cmd *ptr, int *stat_ptr)
                 //char* strcpy(char* destination, const char* source);
                 ptr->output_file_name = (char *)malloc(sizeof(char) * 30);
                 strcpy(ptr->output_file_name, ptr->simple_cmd_args[i + 1]);
-                printf("name of output file is %s\n", ptr->output_file_name);
+                //   fprintf(stderr,"name of output file is %s\n", ptr->output_file_name);
             }
             stat_ptr[1] = 1;
         }
@@ -238,8 +238,8 @@ void redirect_check(struct simple_cmd *ptr, int *stat_ptr)
 void handle_system_cmd_piped(struct cmd_var *ptr)
 {
     // pid_t curr_pid = getpid();
-    printf("entered the forking function\n");
-    fflush(stdout);
+    //  fprintf(stderr,"entered the forking function\n");
+    fflush(stderr);
     int amBackground = 0;
     if (ptr->is_bg != 0)
     {
@@ -307,7 +307,7 @@ void handle_system_cmd_piped(struct cmd_var *ptr)
         {
 
             //It's Child is FOREGROUND PROCESS
-            printf("in parent\n");
+            //fprintf(stderr,"in parent\n");
             fflush(stdout);
 
             //https://www.gnu.org/software/libc/manual/html_node/Foreground-and-Background.html#Foreground-and-Background
@@ -326,7 +326,7 @@ void handle_system_cmd_piped(struct cmd_var *ptr)
             signal(SIGTTIN, SIG_IGN);
 
             // If pid is greater than 0, waitpid() waits for termination of the specific child whose process ID is equal to pid.
-            printf("going to wait\n");
+            // fprintf(stderr,"going to wait\n");
             fflush(stdout);
             short stat_temp = wait(&child_pid);
 
@@ -335,7 +335,7 @@ void handle_system_cmd_piped(struct cmd_var *ptr)
                 perror("Error while wait():");
             }
 
-            printf("wait over\n");
+            //  fprintf(stderr,"wait over\n");
             fflush(stdout);
 
             //Restore control of terminal to self
@@ -437,7 +437,7 @@ void exec_simple_cmd(struct simple_cmd *ptr)
     // redirect(expected_in, STDIN_FILENO);   /* <&in  : child reads from in */
     // redirect(expected_out, STDOUT_FILENO); /* >&out : child writes to out */
 
-    printf("Executing %s\n", ptr->simple_cmd_args[0]);
+    // fprintf(stderr,"Executing %s\n", ptr->simple_cmd_args[0]);
     int stat_redirect[3] = {0, 0, 0};
     redirect_check(ptr, stat_redirect);
     int input_from_file = stat_redirect[0];
@@ -451,7 +451,7 @@ void exec_simple_cmd(struct simple_cmd *ptr)
     if (output_to_file == 1 && append_to_file == 1)
     {
         //Multiple redirections, out of scope
-        printf("Multiple redirections -> out of scope as TA said\n");
+        fprintf(stderr, "Multiple redirections -> out of scope as TA said\n");
         exit(0);
     }
 
@@ -460,7 +460,7 @@ void exec_simple_cmd(struct simple_cmd *ptr)
     {
         if (ptr->input_file_name == NULL)
         {
-            printf("No argument supplied for input redirection\n");
+            fprintf(stderr, "No argument supplied for input redirection\n");
             exit(0);
         }
         else
@@ -483,7 +483,7 @@ void exec_simple_cmd(struct simple_cmd *ptr)
     {
         if (ptr->output_file_name == NULL)
         {
-            printf("No argument supplied for output redirection\n");
+            fprintf(stderr, "No argument supplied for output redirection\n");
             exit(0);
         }
         else
@@ -496,23 +496,23 @@ void exec_simple_cmd(struct simple_cmd *ptr)
             }
             // dup2(proposed_fd_out, STDOUT_FILENO);
             // close(proposed_fd_out);
-            printf("---proposed_fd_out is %d\n", proposed_fd_out);
+            // fprintf(stderr,"---proposed_fd_out is %d\n", proposed_fd_out);
             redirect(proposed_fd_out, STDOUT_FILENO);
         }
     }
 
     if (append_to_file == 1)
     {
-        printf("entered append\n");
+        // printf("entered append\n");
         fflush(stdout);
         if (ptr->append_file_name == NULL)
         {
-            printf("No argument supplied for append redirection\n");
+            fprintf(stderr, "No argument supplied for append redirection\n");
             exit(0);
         }
         else
         {
-            proposed_fd_out = open(ptr->append_file_name, O_WRONLY | O_CREAT, 0644);
+            proposed_fd_out = open(ptr->append_file_name, O_WRONLY | O_CREAT | O_APPEND, 0644);
             if (proposed_fd_out < 0)
             {
                 perror("Error occurred while dealing with APPEND file ");
@@ -525,8 +525,8 @@ void exec_simple_cmd(struct simple_cmd *ptr)
         }
     }
 
-    printf("Dealt with fds\n");
-    fflush(stdout);
+    //  fprintf(stderr,"Dealt with fds\n");
+    //fflush(stdout);
     //if either of the inputs, outputs, appends exists, then shift args accordingly
     if ((input_from_file == 1) || (output_to_file == 1) || (append_to_file == 1))
     {
@@ -540,14 +540,14 @@ void exec_simple_cmd(struct simple_cmd *ptr)
 
         //format -> s1 s2 > r1 < r2 >> r3 s4 s5 s6
 
-        printf("trying to shift\n");
+        //fprintf(stderr,"trying to shift\n");
 
         int tot = ptr->simple_args_num;
         int curr_idx = 0;
-        printf("tot is %d\n", tot);
+        //fprintf(stderr,"tot is %d\n", tot);
         for (int i = 0; i < tot;)
         {
-            printf("i is %d\n", i);
+            //fprintf(stderr,"i is %d\n", i);
             if (strcmp(ptr->simple_cmd_args[i], "<") == 0)
             {
                 i += 2;
@@ -571,26 +571,32 @@ void exec_simple_cmd(struct simple_cmd *ptr)
             ptr->simple_cmd_args[curr_idx++] = ptr->simple_cmd_args[i++];
         }
         ptr->simple_args_num = curr_idx;
-        printf("curr_idx is %d\n", curr_idx);
+        // fprintf(stderr,"curr_idx is %d\n", curr_idx);
         ptr->simple_cmd_args[curr_idx] = NULL;
 
-        printf("failure to shift\n");
+        //fprintf(stderr,"failure to shift\n");
     }
     else
     {
-        printf("NO REDIRECTION STUFF\n");
+        // fprintf(stderr,"NO REDIRECTION STUFF\n");
     }
 
-    printf("args supplied after removal of redirection tokens is %d\n", ptr->simple_args_num);
-    for (i = 0; i < ptr->simple_args_num; i++)
-    {
-        printf("%s\n", ptr->simple_cmd_args[i]);
-    }
+    // fprintf(stderr, "args supplied after removal of redirection tokens is %d\n", ptr->simple_args_num);
+    // for (i = 0; i < ptr->simple_args_num; i++)
+    // {
+    //     fprintf(stderr, "%s\n", ptr->simple_cmd_args[i]);
+    // }
 
-    part;
+    //part;
     fflush(stdout);
     //sleep(1);
     //////////////??EXECUTE IT???????????????????????????//
+
+    if(ptr->simple_args_num==0)
+    {
+        fprintf(stderr,"ERROR in shell: empty command\n");
+        return;
+    }
 
     ///////////////////////////////////////////////////////////////////////////////
     struct cmd_var *offload_ptr = (struct cmd_var *)malloc(sizeof(struct cmd_var));
@@ -601,7 +607,7 @@ void exec_simple_cmd(struct simple_cmd *ptr)
 
     if (strcmp(ptr->simple_cmd_args[ptr->simple_args_num - 1], "&\0") == 0)
     {
-        printf("it is a background job\n");
+        fprintf(stderr, "it is a background job\n");
         offload_ptr->is_bg = 1;
 
         // & is no longer an argument
@@ -618,8 +624,8 @@ void exec_simple_cmd(struct simple_cmd *ptr)
     ////////////////////////////////////////////////////////////////////
 
     int id_cmd = get_cmd_id_piped(ptr->simple_cmd_args[0]);
-    printf("id cmd is %d\n", id_cmd);
-    fflush(stdout);
+    //fprintf(stderr,"id cmd is %d\n", id_cmd);
+    //fflush(stderr);
 
     if (id_cmd != 0)
     {
@@ -631,7 +637,7 @@ void exec_simple_cmd(struct simple_cmd *ptr)
             //IF CD HAS MORE THAN 2 ARGS, it is a disaster
             if (offload_ptr->arg_num > 2)
             {
-                printf("cd:you supplied too many arguments\n");
+                fprintf(stderr, "cd:you supplied too many arguments\n");
             }
             else
             {
@@ -683,9 +689,9 @@ void exec_simple_cmd(struct simple_cmd *ptr)
     else
     {
         //system command
-        printf("Time to invoke system command\n");
+        // fprintf(stderr,"Time to invoke system command\n");
         execute_cmd_piped(offload_ptr);
-        printf("RETURNED SAFELY\n");
+        //  fprintf(stderr,"RETURNED SAFELY\n");
     }
 
     //execute////////////////////////////////////////////////
@@ -867,7 +873,7 @@ int begin_exec(struct master_cmd *ptr)
     //restoring input , output already restored in last_cmd via backup
     redirect(org_std_in, STDIN_FILENO);
     redirect(org_std_out, STDOUT_FILENO);
-    printf("originals restored\n");
+    //fprintf(stderr, "originals restored\n");
     fflush(stdout);
 
     //Close(in_fd);

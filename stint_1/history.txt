@@ -1,20 +1,20 @@
-diff d1.txt d2.txt > out.txt
+cd /bin 
+cd ~
+ls /bin
+history 3
+date
+date | wc
+echo hi | wc
+ls -l | wc
+ls -l > tempfile | wc
+cat tmpfile
+cat tempfile
+cut -d : -f 7 /etc/passwd | sort | head
+cut -d : -f 7 /etc/passwd | sort | uniq -c | sort -nr | head -n 4
+tail -n 2 /etc/passwd | head -n 1
+ls -s | sort -nr | head -n 5
+ls -l
+vim A_file.cpp &
+ps
+kill -SIGKILL 26520
 ls
-ls : wc
-ls | wc
-sort < exp1.c
-sort < main.c > sortledlines.txt
-sort < main.c > sortedlines.txt
-sort < main.c > sorted,txt
-sort < main.c > out.txt
-sort < main.c > sorted.txt
-sort < main.c
-sort < main.c > sorted.txt
-more main.c | wc
-grep int main.c | cat d1.txt | wc
-grep int main.c | cat d1.txt
-grep int main.c | cat d1.txt | wc
- ls | grep *.txt > out.txt
-ls | grep echo.c > out.txt
-cat lines.txt
-cat < exp1.c | wc -l > lines.txt
