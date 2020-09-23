@@ -1,0 +1,20 @@
+Dealt with fds
+trying to shift
+tot is 4
+i is 0
+i is 1
+i is 2
+curr_idx is 2
+failure to shift
+args supplied after removal of redirection tokens is 2
+grep
+echo.c
+-----------------------------------------
+id cmd is 0
+Time to invoke system command
+entered the forking function
+in parent
+going to wait
+echo.c
+wait over
+RETURNED SAFELY

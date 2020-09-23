@@ -1,20 +1,20 @@
-ls | head -3 | tail -2
-ls | wc
+diff d1.txt d2.txt > out.txt
 ls
-ls | wc | wc
+ls : wc
 ls | wc
-ls
-echo hi there mom >file 
-echo hi there mon > file
-echo hi there mom < history.txt
-echo hi there < history.txt mom
-echo hello < history.txt mom
-echo hi < history.txt there mom
-ls | wc
-ls
-ls -l ./a
-ls | wc
-diff d1.txt d2.txt
-sort < d2.txt
-ls | wc
-ls | echo
+sort < exp1.c
+sort < main.c > sortledlines.txt
+sort < main.c > sortedlines.txt
+sort < main.c > sorted,txt
+sort < main.c > out.txt
+sort < main.c > sorted.txt
+sort < main.c
+sort < main.c > sorted.txt
+more main.c | wc
+grep int main.c | cat d1.txt | wc
+grep int main.c | cat d1.txt
+grep int main.c | cat d1.txt | wc
+ ls | grep *.txt > out.txt
+ls | grep echo.c > out.txt
+cat lines.txt
+cat < exp1.c | wc -l > lines.txt

@@ -1,0 +1,168 @@
+Dealt with fds
+trying to shift
+tot is 5
+i is 0
+i is 1
+i is 3
+curr_idx is 1
+failure to shift
+args supplied after removal of redirection tokens is 1
+sort
+-----------------------------------------
+id cmd is 0
+Time to invoke system command
+entered the forking function
+in parent
+going to wait
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            
+                {
+                }
+            {
+            {
+            {
+            {
+            }
+            }
+            }
+            }
+        {
+        {
+        {
+        {
+        }
+        }
+        }
+        }
+    ////////////////////
+    {
+    {
+    {
+    {
+    }
+    }
+    }
+    }
+//////////////////////////////////////////////////////////////////////////////
+{
+{
+}
+}
+            //adding command to history
+            add_new_cmd(cmd_input);
+        bg_ptr[i]->cmd_name[0] = '\0';
+        bg_ptr[i]->cmd_stat = 0;
+        bg_ptr[i]->pid = -2;
+        bg_ptr[i] = (struct bg_cmd *)malloc(sizeof(struct bg_cmd));
+    bool printPrompt = true;
+    char *cmd_input = (char *)malloc(sizeof(char) * (cmd_buffer_sz));
+    char *colon_cmds[50];
+char curr_dir_path[1024];
+            char delims[] = ";";
+char *hist_cmds[22];
+char history_file_path[1024];
+char home_dir_path[1024];
+    char hostname_ans[500];
+char shell_dir_path[1024];
+        chars_read = getline(&cmd_input, &cmd_buffer_sz, stdin);
+            char *token_beg;
+    char username_ans[200];
+            cmd_input[chars_read - 1] = '\0';
+        //&cmd_input needed as in case the buffer gets changed to a different loc, we need it to get updated there
+            colon_cmds[colon_cmds_idx++] = token_beg = strtok(cmd_input, delims);
+                colon_cmds[colon_cmds_idx++] = token_beg = strtok(NULL, delims);
+        colon_cmds_idx = 0;
+                continue;
+    curr_history_num = 0;
+#define bg_ptr_sz 500
+            display_prompt(username_ans, hostname_ans);
+        else
+        else
+                    execute_command_after_format(colon_cmds[i]);
+            for (i = 0; i < colon_cmds_idx; i++)
+    for (int i = 0; i < 22; i++)
+    for (int i = 0; i < bg_ptr_sz; i++)
+    for (int i = 0; i < len_home_dir; i++)
+    get_hostname_linux(hostname_ans);
+    get_pwd_path_no_print(curr_dir_path);
+    get_pwd_path_no_print(home_dir_path);
+    //getting home_dir
+    get_username_linux(username_ans);
+            //handling the \n produced due to pressing enter
+        hist_cmds[i][0] = '\0';
+        hist_cmds[i] = (char *)malloc(sizeof(100));
+        history_file_path[i] = home_dir_path[i];
+    history_file_path[len_home_dir] = '\0';
+            //https://man7.org/linux/man-pages/man3/strtok.3.html
+            if (chars_read == 0)
+        if (chars_read == -1)
+            if (chars_read == 1 && cmd_input[0] == '\n')
+                if (colon_cmds[i] != NULL)
+        if (printPrompt == false)
+#include "master_header.h"
+    //init bg struct
+    //initially curr_dir is also SHELL HOME
+    //initially,  number of background commands is zero
+    init_stuff();
+    int colon_cmds_idx = 0;
+int main()
+int script_pid, num_bg_cmd, curr_history_num;
+                //i think redundant but still
+    LL i;
+    LL len_home_dir = strlen(home_dir_path);
+    num_bg_cmd = 0;
+        //part;
+            perror("getline() error:");
+    //printf("Home dir path is %s\n", home_dir_path);
+        //printf("in loop\n");
+    printf("pid() is main is %d\n",getpid());
+        printf("pid terminal is %d\n",getpid());
+    //printf("SCRIPT pid is %d\n", script_pid);
+                //printf("Token inside loop is %s\n", token_beg);
+            //printf("WEIRD INPUT ERROR AS first char of input surprisingly had null char\n");
+    printf("Welcome to my shell !!!\n");
+                printPrompt = false;
+            printPrompt = true;
+    reset_color();
+            return 0;
+    return 0;
+    script_pid = getpid();
+        //setting to zero before next command is read to be divided
+    setup_history();
+    //setup history path
+    signal(SIGCHLD, reapChild);
+        ssize_t chars_read; //stores number of characters read by the getline func
+    //storing scipt_pid of the master ./a file
+    strcat(history_file_path, "/history.txt\0");
+struct bg_cmd *bg_ptr[bg_ptr_sz];
+    unsigned long cmd_buffer_sz = 200;
+void init_stuff()
+            while (token_beg != NULL)
+    while (true)
+    yellow_color();
+wait over
+RETURNED SAFELY
