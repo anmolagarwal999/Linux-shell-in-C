@@ -149,7 +149,7 @@ void parse_cmd_for_master(char *cmd_input, struct master_cmd *ptr)
     // master_cmd_args is of form s1 s2 s3 | s4 s5 s6 |  s7 s8 ... NULL
 }
 
-#define Close(FD)                                         \
+/*#define Close(FD)                                         \
     do                                                    \
     {                                                     \
         int Close_fd = (FD);                              \
@@ -159,7 +159,7 @@ void parse_cmd_for_master(char *cmd_input, struct master_cmd *ptr)
             fprintf(stderr, "%s:%d: close(" #FD ") %d\n", \
                     __FILE__, __LINE__, Close_fd);        \
         }                                                 \
-    } while (0)
+    } while (0)*/
 #define PROGNAME "my_shell_progname"
 
 static void report_error_and_exit_helper(const char *message, void (*exit_func)(int))
@@ -185,7 +185,7 @@ void redirect(int oldfd, int newfd)
     if (oldfd != newfd)
     {
         if (dup2(oldfd, newfd) != -1)
-            Close(oldfd); /* successfully redirected */
+            close(oldfd); /* successfully redirected */
         else
             _report_error_and_exit("dup2");
     }
@@ -195,7 +195,7 @@ void run(char *const argv[], int in, int out)
 {
     redirect(in, STDIN_FILENO);   /* <&in  : child reads from in */
     redirect(out, STDOUT_FILENO); /* >&out : child writes to out */
-
+    printf("Executing %s\n",argv[0]);
     execvp(argv[0], argv);
     _report_error_and_exit("execvp");
 }
@@ -213,21 +213,22 @@ int begin_exec(struct master_cmd *ptr)
 
     for (i = 0; i < (n - 1) + 1; i++)
     {
-        int fd[2]; /* in/out pipe ends */
-        pid_t pid; /* child's pid */
-        printf("i is %d\n",i);
+        int fd[2];
+        printf("i is %d\n", i);
 
         if (pipe(fd) == -1)
         {
             //error while generating pipe
             report_error_and_exit("pipe");
         }
-        else if ((pid = fork()) == -1)
+
+        pid_t child_pid = fork();
+        if (child_pid == -1)
         {
             //error while forking
-            report_error_and_exit("fork");
+            perror("Error during fork() details");
         }
-        else if (pid == 0)
+        else if (child_pid == 0)
         {
 
             //exclusively in the child
@@ -236,9 +237,13 @@ int begin_exec(struct master_cmd *ptr)
             // the 'pipe[0]' ie read end of them pipe is of no use here as child runs cmd 1 in cmd 1 | cmd 2 and fd[0] is read_end for cmd2 and not for cmd 1
             //we are closing this end only in CHILD and not in PARENT
 
-            //'in' is the read end of the pipe | in 'cmd 0 | cmd 1' where this current child is executing cmd-1
+            //'in_fd' is the read end of the pipe | in 'cmd_0 | cmd_1' where this current child is executing cmd_1
 
-            Close(fd[0]); /* close unused read end of the pipe */
+            /* close unused read end of the pipe */
+            if (close(fd[0]) == -1)
+            {
+                perror("Error in closing fd[0]");
+            }
 
             if (i == n - 1)
             {
@@ -262,11 +267,24 @@ int begin_exec(struct master_cmd *ptr)
             //assert(pid > 0);
 
             //necessary to close this otherwise read of cmd_2 will never terminate as it will always see an active 'write_end'
-            Close(fd[1]); /* close unused write end of the pipe */
+            if (close(fd[1]) == -1)
+            {
+                perror("Error in closing fd[1]");
+            }
+            int status_child;
+            if ((child_pid = waitpid(child_pid, &status_child,0)) == -1)
+            {
+                perror("wait() error");
+            }
 
-            //in is still set to 'read_end' of pipe | of  'cmd_0 | cmd_1' which is something we no longer need as the command is fg has already been executed as is evident from the wait cmd
-            Close(in_fd); /* close unused read end of the previous pipe */
-            short stat_temp = wait(&pid);
+            //in is still set to 'read_end' of pipe | of  'cmd_0 | cmd_1' which is something we no longer need as the command in
+            //fg has already been executed as is evident from the wait cmd
+
+            /* close unused read end of the previous pipe */
+            if (close(in_fd) == -1)
+            {
+                perror("Error in closing in_fd");
+            }
 
             in_fd = fd[0]; /* the next command reads from here */
         }
