@@ -41,7 +41,9 @@ struct simple_cmd
     char *simple_cmd_args[100];
     char input_file_name[50];
     char output_file_name[50];
+     char append_file_name[50];
 };
+
 #define bg_ptr_sz 500
 extern struct bg_cmd *bg_ptr[bg_ptr_sz];
 extern char *hist_cmds[22];

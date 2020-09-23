@@ -9,6 +9,7 @@
 //     char *simple_cmd_args[100];
 //     char input_file_name[50];
 //     char output_file_name[50];
+//      char append_file_name[50];
 // };
 
 // struct master_cmd
@@ -42,6 +43,8 @@ void init_simple_cmd_struct(struct simple_cmd *ptr)
     ptr->simple_args_num = 0;
     ptr->input_file_name[0] = '\0';
     ptr->output_file_name[0] = '\0';
+    ptr->append_file_name[0] = '\0';
+
     for (int i = 0; i < 100; i++)
     {
         ptr->simple_cmd_args[i] = NULL;
@@ -149,17 +152,6 @@ void parse_cmd_for_master(char *cmd_input, struct master_cmd *ptr)
     // master_cmd_args is of form s1 s2 s3 | s4 s5 s6 |  s7 s8 ... NULL
 }
 
-/*#define Close(FD)                                         \
-    do                                                    \
-    {                                                     \
-        int Close_fd = (FD);                              \
-        if (close(Close_fd) == -1)                        \
-        {                                                 \
-            perror("close");                              \
-            fprintf(stderr, "%s:%d: close(" #FD ") %d\n", \
-                    __FILE__, __LINE__, Close_fd);        \
-        }                                                 \
-    } while (0)*/
 #define PROGNAME "my_shell_progname"
 
 static void report_error_and_exit_helper(const char *message, void (*exit_func)(int))
@@ -191,13 +183,92 @@ void redirect(int oldfd, int newfd)
     }
 }
 
-void exec_simple_cmd(char *const argv[], int in, int out)
+int check_input_from_file(struct simple_cmd *ptr)
+{
+    int tot = ptr->simple_args_num;
+    int status_ret = 0;
+    for (int i = 0; i < tot; i++)
+    {
+        if (strcmp(ptr->simple_cmd_args[i], "<") == 0)
+        {
+            status_ret = 1;
+            if (i + 1 < tot)
+            {
+                //char* strcpy(char* destination, const char* source);
+                strcpy(ptr->input_file_name, ptr->simple_cmd_args[i + 1]);
+            }
+        }
+    }
+    return status_ret;
+}
+
+int check_output_to_file(struct simple_cmd *ptr)
+{
+    int tot = ptr->simple_args_num;
+    int status_ret = 0;
+    for (int i = 0; i < tot; i++)
+    {
+        if (strcmp(ptr->simple_cmd_args[i], ">") == 0)
+        {
+            status_ret = 1;
+            if (i + 1 < tot)
+            {
+                //char* strcpy(char* destination, const char* source);
+                strcpy(ptr->output_file_name, ptr->simple_cmd_args[i + 1]);
+            }
+        }
+    }
+    return status_ret;
+}
+
+int check_append_to_file(struct simple_cmd *ptr)
+{
+    int tot = ptr->simple_args_num;
+    int status_ret = 0;
+    for (int i = 0; i < tot; i++)
+    {
+        if (strcmp(ptr->simple_cmd_args[i], ">") == 0)
+        {
+            status_ret = 1;
+            if (i + 1 < tot)
+            {
+                //char* strcpy(char* destination, const char* source);
+                strcpy(ptr->append_file_name, ptr->simple_cmd_args[i + 1]);
+            }
+        }
+    }
+    return status_ret;
+}
+
+void exec_simple_cmd(struct simple_cmd *ptr, int in, int out)
 {
     redirect(in, STDIN_FILENO);   /* <&in  : child reads from in */
     redirect(out, STDOUT_FILENO); /* >&out : child writes to out */
-    printf("Executing %s\n",argv[0]);
+    printf("Executing %s\n", ptr->simple_cmd_args[0]);
+
+    int input_from_file=check_input_from_file(ptr);
+    int output_to_file=check_output_to_file(ptr);
+    // int append_to_file
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    /*
     execvp(argv[0], argv);
     _report_error_and_exit("execvp");
+    */
 }
 
 int begin_exec(struct master_cmd *ptr)
@@ -249,11 +320,11 @@ int begin_exec(struct master_cmd *ptr)
             {
                 //return ;
                 printf("last straw\n");
-                exec_simple_cmd((char *const *)(ptr->atomic_cmd[i].simple_cmd_args), in_fd, STDOUT_FILENO); /* $ command < in */
+                exec_simple_cmd(&ptr->atomic_cmd[i], in_fd, STDOUT_FILENO); /* $ command < in */
             }
             else
             {
-                exec_simple_cmd((char *const *)(ptr->atomic_cmd[i].simple_cmd_args), in_fd, fd[1]); /* FORMAT is as follows ::::  $ command < in > fd[1] */
+                exec_simple_cmd(&ptr->atomic_cmd[i], in_fd, fd[1]); /* FORMAT is as follows ::::  $ command < in > fd[1] */
             }
         }
         else
@@ -272,7 +343,7 @@ int begin_exec(struct master_cmd *ptr)
                 perror("Error in closing fd[1]");
             }
             int status_child;
-            if ((child_pid = waitpid(child_pid, &status_child,0)) == -1)
+            if ((child_pid = waitpid(child_pid, &status_child, 0)) == -1)
             {
                 perror("wait() error");
             }
