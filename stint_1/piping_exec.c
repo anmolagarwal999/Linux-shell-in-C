@@ -676,6 +676,8 @@ void exec_simple_cmd(struct simple_cmd *ptr, int expected_in, int expected_out)
     */
 }
 
+
+//contains pipe '|' separate commands
 int begin_exec(struct master_cmd *ptr)
 {
     int n = ptr->number_of_piped_cmds;
