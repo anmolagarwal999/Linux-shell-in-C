@@ -191,10 +191,10 @@ void redirect(int oldfd, int newfd)
     }
 }
 
-void run(char *const argv[], int in, int out)
+void exec_simple_cmd(char *const argv[], int in, int out)
 {
-    //redirect(in, STDIN_FILENO);   /* <&in  : child reads from in */
-    //redirect(out, STDOUT_FILENO); /* >&out : child writes to out */
+    redirect(in, STDIN_FILENO);   /* <&in  : child reads from in */
+    redirect(out, STDOUT_FILENO); /* >&out : child writes to out */
     printf("Executing %s\n",argv[0]);
     execvp(argv[0], argv);
     _report_error_and_exit("execvp");
@@ -204,15 +204,12 @@ int begin_exec(struct master_cmd *ptr)
 {
     int n = ptr->number_of_piped_cmds;
 
-    int par_org_stdin=dup(STDIN_FILENO);
-    int par_org_stdout=dup(STDOUT_FILENO);
-
     /* run all commands but the last */
     int i = 0;
 
     //the first command reads from STDIN of CLI
-    int in_fd = dup(STDIN_FILENO); 
-    int out_fd=dup(STDOUT_FILENO);
+    int in_fd = dup(STDIN_FILENO); /* the first command reads from stdin */
+    //return;
 
     for (i = 0; i < (n - 1) + 1; i++)
     {
@@ -224,20 +221,6 @@ int begin_exec(struct master_cmd *ptr)
             //error while generating pipe
             report_error_and_exit("pipe");
         }
-
-        if(in_fd!=STDIN_FILENO)
-        {
-            dup2(in_fd,STDIN_FILENO);
-        }
-        close(in_fd);
-
-
-        out_fd=fd[1];
-        if(out_fd!=STDOUT_FILENO)
-        {
-            dup2(out_fd,STDOUT_FILENO);
-        }
-        close(out_fd);
 
         pid_t child_pid = fork();
         if (child_pid == -1)
@@ -266,28 +249,28 @@ int begin_exec(struct master_cmd *ptr)
             {
                 //return ;
                 printf("last straw\n");
-                run((char *const *)(ptr->atomic_cmd[i].simple_cmd_args), STDIN_FILENO, STDOUT_FILENO); /* $ command < in */
+                exec_simple_cmd((char *const *)(ptr->atomic_cmd[i].simple_cmd_args), in_fd, STDOUT_FILENO); /* $ command < in */
             }
             else
             {
-                run((char *const *)(ptr->atomic_cmd[i].simple_cmd_args), STDIN_FILENO, STDOUT_FILENO); /* FORMAT is as follows ::::  $ command < in > fd[1] */
+                exec_simple_cmd((char *const *)(ptr->atomic_cmd[i].simple_cmd_args), in_fd, fd[1]); /* FORMAT is as follows ::::  $ command < in > fd[1] */
             }
         }
         else
         { /* parent */
 
-            
+            //////////////ADD WAIT STATEMENT HERE ??????????????????????????????????????????????///
+
+            ////WAIT/////
+
+            /////////////////////////////////////////////////////////////////////
+            //assert(pid > 0);
 
             //necessary to close this otherwise read of cmd_2 will never terminate as it will always see an active 'write_end'
-            // if (close(STDOUT_FILENO) == -1)
-            // {
-            //     perror("Error in closing fd[1]");
-            // }
-            dup2(par_org_stdin,STDIN_FILENO);
-            dup2(par_org_stdout,STDOUT_FILENO);
-
-
-
+            if (close(fd[1]) == -1)
+            {
+                perror("Error in closing fd[1]");
+            }
             int status_child;
             if ((child_pid = waitpid(child_pid, &status_child,0)) == -1)
             {
@@ -308,6 +291,6 @@ int begin_exec(struct master_cmd *ptr)
     }
     /* run the last command */
     //Close(in_fd);
-    // run((char *const *)(ptr->atomic_cmd[i].simple_cmd_args), in_fd, STDOUT_FILENO); /* $ command < in */
+    // exec_simple_cmd((char *const *)(ptr->atomic_cmd[i].simple_cmd_args), in_fd, STDOUT_FILENO); /* $ command < in */
     return 0;
 }
