@@ -424,6 +424,14 @@ int get_cmd_id_piped(char *cmd_name)
     {
         id_cmd = 8;
     }
+    else if (strcmp(cmd_name, "setenv") == 0)
+    {
+        id_cmd = 9;
+    }
+    else if (strcmp(cmd_name, "unsetenv") == 0)
+    {
+        id_cmd = 10;
+    }
 
     return id_cmd;
 }
@@ -685,6 +693,15 @@ void exec_simple_cmd(struct simple_cmd *ptr)
         {
             exec_nightswatch(offload_ptr);
         }
+        else if (id_cmd == 9)
+        {
+            exec_set_env_var(offload_ptr);
+        }
+        else if (id_cmd == 10)
+        {
+            exec_unset_env_var(offload_ptr);
+        }
+        
     }
     else
     {
