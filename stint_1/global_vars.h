@@ -16,6 +16,7 @@ extern char history_file_path[1024];
 //https://stackoverflow.com/questions/1045501/how-do-i-share-variables-between-different-c-files?noredirect=1&lq=1
 extern int script_pid;
 extern int num_jobs_cmd;
+extern int curr_job_id;
 extern int curr_history_num;
 
 #define max_poss_args 100
@@ -30,8 +31,8 @@ struct jobs_cmd
 {
     int pid,jid;
     char cmd_name[100];
-    int cmd_stat;
-    int is_relevant;
+    int cmd_stat;  //running or stopped 1->running, 2 -> stopped
+    int is_relevant; // is 1 only if it is not terminated yet, becomes 1 if it has been terminated
 };
 
 struct simple_cmd
@@ -45,8 +46,8 @@ struct simple_cmd
     char *append_file_name;
 };
 
-#define bg_ptr_sz 500
-extern struct jobs_cmd *jobs_ptr[bg_ptr_sz];
+#define jobs_ptr_sz 50
+extern struct jobs_cmd *jobs_ptr[jobs_ptr_sz];
 extern char *hist_cmds[22];
 
 struct master_cmd

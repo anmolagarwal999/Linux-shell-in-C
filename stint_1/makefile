@@ -4,7 +4,7 @@ LDFLAGS =
 OBJFILES = main.o execution.o path_related.o exec_cd.o \
 			ls.o echo.o pinfo.o reap_child.o\
 			get_history.o divide_input.o prompt.o nightswatch.o piping_exec.o\
-			env.o
+			env.o jobs_related.o
 
 TARGET = a
 
@@ -59,4 +59,7 @@ piping_exec.o: piping_exec.c
 
 env.o: env.c
 	$(CC) $(CFLAGS) env.c
+
+jobs_related.o: jobs_related.c
+	$(CC) $(CFLAGS) jobs_related.c
 	

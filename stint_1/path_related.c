@@ -1,8 +1,6 @@
 #include "master_header.h"
 
 typedef long long LL;
-#define part printf("-----------------------------------------\n");
-#define part2 printf("====================================================\n");
 
 void get_pwd_path(char *dir_path)
 {

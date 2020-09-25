@@ -251,19 +251,7 @@ void handle_system_cmd_piped(struct cmd_var *ptr)
 
     if (ptr->is_bg != 0 && child_pid > 0)
     {
-        //is bg cmd
-        bg_ptr[num_bg_cmd]->pid = child_pid;
-        bg_ptr[num_bg_cmd]->cmd_name[0] = '\0';
-        bg_ptr[num_bg_cmd]->cmd_stat = 1; //process has not yet returned a signal
-
-        for (int i = 0; i < ptr->arg_num; i++)
-        {
-            strcat(bg_ptr[num_bg_cmd]->cmd_name, ptr->cmd_args[i]);
-            strcat(bg_ptr[num_bg_cmd]->cmd_name, " \0");
-        }
-        num_bg_cmd++;
-
-        printf("Newly created background process with pid : %d\n", child_pid);
+        add_job(child_pid,ptr);
     }
 
     if (child_pid < 0)

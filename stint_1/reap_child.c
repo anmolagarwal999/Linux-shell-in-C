@@ -23,26 +23,26 @@ void reapChild(int signum)
         }
         else
         {
-            for (i = 0; i < num_bg_cmd; i++)
+            for (i = 0; i < num_jobs_cmd; i++)
             {
                 //printf("i is %d\n", i);
-                if (bg_ptr[i]->pid == suspected_pid)
+                if (jobs_ptr[i]->pid == suspected_pid)
                 {
                     //genuine process
-                    //  printf("genuine process with pid %d\n", bg_ptr[i]->pid);
-                    if (bg_ptr[i]->cmd_stat == 1)
+                    //  printf("genuine process with pid %d\n", jobs_ptr[i]->pid);
+                    if (jobs_ptr[i]->cmd_stat == 1)
                     {
                         //possible change in behaviour
-                        bg_ptr[i]->cmd_stat = 0;
+                        jobs_ptr[i]->cmd_stat = 0;
 
                         if (WIFEXITED(*stat_loc) && WEXITSTATUS(*stat_loc) == EXIT_SUCCESS)
                         {
                             //  https://stackoverflow.com/questions/39002052/how-i-can-print-to-stderr-in-c
-                            fprintf(stderr, "%s with pid %d exited normally\n", bg_ptr[i]->cmd_name, bg_ptr[i]->pid);
+                            fprintf(stderr, "%s with pid %d exited normally\n", jobs_ptr[i]->cmd_name, jobs_ptr[i]->pid);
                         }
                         else
                         {
-                            fprintf(stderr, "%s with pid %d exited ABNORMALLY with status as %d\n", bg_ptr[i]->cmd_name, bg_ptr[i]->pid, WEXITSTATUS(*stat_loc));
+                            fprintf(stderr, "%s with pid %d exited ABNORMALLY with status as %d\n", jobs_ptr[i]->cmd_name, jobs_ptr[i]->pid, WEXITSTATUS(*stat_loc));
                         }
 
                         break;

@@ -1,5 +1,3 @@
-ls -l | wc
-ls -l > tempfile | wc
 cat tmpfile
 cat tempfile
 cut -d : -f 7 /etc/passwd | sort | head
@@ -18,3 +16,5 @@ unsetenv HOME
 exit
 ps
 jobs
+sleep 2 &
+sleep 3 &

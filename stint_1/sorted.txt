@@ -74,10 +74,10 @@ going to wait
 }
             //adding command to history
             add_new_cmd(cmd_input);
-        bg_ptr[i]->cmd_name[0] = '\0';
-        bg_ptr[i]->cmd_stat = 0;
-        bg_ptr[i]->pid = -2;
-        bg_ptr[i] = (struct bg_cmd *)malloc(sizeof(struct bg_cmd));
+        jobs_ptr[i]->cmd_name[0] = '\0';
+        jobs_ptr[i]->cmd_stat = 0;
+        jobs_ptr[i]->pid = -2;
+        jobs_ptr[i] = (struct bg_cmd *)malloc(sizeof(struct bg_cmd));
     bool printPrompt = true;
     char *cmd_input = (char *)malloc(sizeof(char) * (cmd_buffer_sz));
     char *colon_cmds[50];
@@ -98,14 +98,14 @@ char shell_dir_path[1024];
         colon_cmds_idx = 0;
                 continue;
     curr_history_num = 0;
-#define bg_ptr_sz 500
+#define jobs_ptr_sz 500
             display_prompt(username_ans, hostname_ans);
         else
         else
                     execute_command_after_format(colon_cmds[i]);
             for (i = 0; i < colon_cmds_idx; i++)
     for (int i = 0; i < 22; i++)
-    for (int i = 0; i < bg_ptr_sz; i++)
+    for (int i = 0; i < jobs_ptr_sz; i++)
     for (int i = 0; i < len_home_dir; i++)
     get_hostname_linux(hostname_ans);
     get_pwd_path_no_print(curr_dir_path);
@@ -130,11 +130,11 @@ char shell_dir_path[1024];
     init_stuff();
     int colon_cmds_idx = 0;
 int main()
-int script_pid, num_bg_cmd, curr_history_num;
+int script_pid, num_jobs_cmd, curr_history_num;
                 //i think redundant but still
     LL i;
     LL len_home_dir = strlen(home_dir_path);
-    num_bg_cmd = 0;
+    num_jobs_cmd = 0;
         //part;
             perror("getline() error:");
     //printf("Home dir path is %s\n", home_dir_path);
@@ -158,7 +158,7 @@ int script_pid, num_bg_cmd, curr_history_num;
         ssize_t chars_read; //stores number of characters read by the getline func
     //storing scipt_pid of the master ./a file
     strcat(history_file_path, "/history.txt\0");
-struct bg_cmd *bg_ptr[bg_ptr_sz];
+struct bg_cmd *jobs_ptr[jobs_ptr_sz];
     unsigned long cmd_buffer_sz = 200;
 void init_stuff()
             while (token_beg != NULL)

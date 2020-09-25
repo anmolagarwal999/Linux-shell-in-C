@@ -24,6 +24,7 @@
 #include "nightswatch.h"
 #include "piping_exec.h"
 #include "env.h"
+#include "jobs_related.h"
 
 #include <sys/types.h>
 #include <sys/wait.h>
