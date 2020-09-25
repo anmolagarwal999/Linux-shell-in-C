@@ -8,10 +8,10 @@ char shell_dir_path[1024];
 char history_file_path[1024];
 char *hist_cmds[22];
 
-int script_pid, num_bg_cmd, curr_history_num;
+int script_pid, num_jobs_cmd, curr_history_num;
 
-#define bg_ptr_sz 500
-struct bg_cmd *bg_ptr[bg_ptr_sz];
+#define jobs_ptr_sz 500
+struct jobs_cmd *jobs_ptr[jobs_ptr_sz];
 
 void init_stuff()
 {
@@ -29,15 +29,17 @@ void init_stuff()
     //printf("SCRIPT pid is %d\n", script_pid);
 
     //initially,  number of background commands is zero
-    num_bg_cmd = 0;
+    num_jobs_cmd = 0;
 
     //init bg struct
-    for (int i = 0; i < bg_ptr_sz; i++)
+    for (int i = 0; i < jobs_ptr_sz; i++)
     {
-        bg_ptr[i] = (struct bg_cmd *)malloc(sizeof(struct bg_cmd));
-        bg_ptr[i]->pid = -2;
-        bg_ptr[i]->cmd_name[0] = '\0';
-        bg_ptr[i]->cmd_stat = 0;
+        jobs_ptr[i] = (struct jobs_cmd *)malloc(sizeof(struct jobs_cmd));
+        jobs_ptr[i]->pid = -2;
+        jobs_ptr[i]->jid=-1;
+        jobs_ptr[i]->cmd_name[0] = '\0';
+        jobs_ptr[i]->cmd_stat = 0;
+        jobs_ptr[i]->is_relevant=0;
     }
 
     ////////////////////

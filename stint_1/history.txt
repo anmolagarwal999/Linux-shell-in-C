@@ -1,5 +1,3 @@
-date | wc
-echo hi | wc
 ls -l | wc
 ls -l > tempfile | wc
 cat tmpfile
@@ -18,3 +16,5 @@ unsetenf id d
 unsetenv id ddd
 unsetenv HOME
 exit
+ps
+jobs

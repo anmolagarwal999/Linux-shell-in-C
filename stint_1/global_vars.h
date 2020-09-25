@@ -15,7 +15,7 @@ extern char history_file_path[1024];
 
 //https://stackoverflow.com/questions/1045501/how-do-i-share-variables-between-different-c-files?noredirect=1&lq=1
 extern int script_pid;
-extern int num_bg_cmd;
+extern int num_jobs_cmd;
 extern int curr_history_num;
 
 #define max_poss_args 100
@@ -26,11 +26,12 @@ struct cmd_var
     int is_bg;
 };
 
-struct bg_cmd
+struct jobs_cmd
 {
-    int pid;
+    int pid,jid;
     char cmd_name[100];
     int cmd_stat;
+    int is_relevant;
 };
 
 struct simple_cmd
@@ -45,7 +46,7 @@ struct simple_cmd
 };
 
 #define bg_ptr_sz 500
-extern struct bg_cmd *bg_ptr[bg_ptr_sz];
+extern struct jobs_cmd *jobs_ptr[bg_ptr_sz];
 extern char *hist_cmds[22];
 
 struct master_cmd
