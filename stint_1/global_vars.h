@@ -18,6 +18,7 @@ extern int script_pid;
 extern int num_jobs_cmd;
 extern int curr_job_id;
 extern int curr_history_num;
+extern int curr_fg_pid;
 
 #define max_poss_args 100
 struct cmd_var
@@ -32,7 +33,7 @@ struct jobs_cmd
     int pid,jid;
     char cmd_name[100];
     int cmd_stat;  //running or stopped 1->running, 2 -> stopped
-    int is_relevant; // is 1 only if it is not terminated yet, becomes 1 if it has been terminated
+    int is_relevant; // is 1 only if it is not terminated yet, becomes 0 if it has been terminated
 };
 
 struct simple_cmd

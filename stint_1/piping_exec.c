@@ -195,7 +195,7 @@ void redirect_check(struct simple_cmd *ptr, int *stat_ptr)
 {
     int tot = ptr->simple_args_num;
     //int status_ret = 0;
-   // fprintf(stderr, "Entered for redirection checking possibility\n");
+    // fprintf(stderr, "Entered for redirection checking possibility\n");
     for (int i = 0; i < tot; i++)
     {
         if (strcmp(ptr->simple_cmd_args[i], "<") == 0)
@@ -251,7 +251,7 @@ void handle_system_cmd_piped(struct cmd_var *ptr)
 
     if (ptr->is_bg != 0 && child_pid > 0)
     {
-        add_job(child_pid,ptr);
+        add_job(child_pid, ptr, 1);
     }
 
     if (child_pid < 0)
@@ -266,6 +266,11 @@ void handle_system_cmd_piped(struct cmd_var *ptr)
         //background process -> INHERITED->vim inherits signal(SIGTTIN, SIG_IGN);and signal(SIGTTOU, SIG_IGN); which is desirable
 
         //to do, implement foreground/background tcsetgrp to prevent terminal hogging by bg
+
+        //restoring the cntrl C default behaviour
+        printf("Default restored\n");
+        signal(SIGINT, SIG_DFL);
+        signal(SIGTSTP, SIG_DFL);
 
         setpgid(getpid(), 0);
         if (amBackground == 0)
@@ -297,6 +302,7 @@ void handle_system_cmd_piped(struct cmd_var *ptr)
             //It's Child is FOREGROUND PROCESS
             //fprintf(stderr,"in parent\n");
             fflush(stdout);
+            curr_fg_pid = child_pid;
 
             //https://www.gnu.org/software/libc/manual/html_node/Foreground-and-Background.html#Foreground-and-Background
 
@@ -316,7 +322,10 @@ void handle_system_cmd_piped(struct cmd_var *ptr)
             // If pid is greater than 0, waitpid() waits for termination of the specific child whose process ID is equal to pid.
             // fprintf(stderr,"going to wait\n");
             fflush(stdout);
-            short stat_temp = wait(&child_pid);
+            int fg_stat_ptr;
+            short stat_temp = waitpid(child_pid, &fg_stat_ptr, WUNTRACED);
+
+            printf("fg_stat after waitpid is is %d\n", fg_stat_ptr);
 
             if (stat_temp == -1)
             {
@@ -333,6 +342,19 @@ void handle_system_cmd_piped(struct cmd_var *ptr)
             signal(SIGTTOU, SIG_DFL);
             signal(SIGTTIN, SIG_DFL);
             //exit(0);
+
+            printf("Wait over\n");
+            curr_fg_pid = -1;
+
+            /* WIFSTOPPED(wstatus)
+              returns true if the child process was stopped by delivery of a
+              signal; this is possible only if the call was done using WUN‐
+              TRACED or when the child is being traced (see ptrace(2)).*/
+
+            if (WIFSTOPPED(fg_stat_ptr))
+            {
+                add_job(child_pid, ptr, 0);
+            }
         }
         else
         {
@@ -419,6 +441,34 @@ int get_cmd_id_piped(char *cmd_name)
     else if (strcmp(cmd_name, "unsetenv") == 0)
     {
         id_cmd = 10;
+    }
+    else if (strcmp(cmd_name, "fg") == 0)
+    {
+        id_cmd = 11;
+    }
+    else if (strcmp(cmd_name, "bg") == 0)
+    {
+        id_cmd = 12;
+    }
+    else if (strcmp(cmd_name, "overkill") == 0)
+    {
+        id_cmd = 13;
+    }
+    else if (strcmp(cmd_name, "quit") == 0)
+    {
+        id_cmd = 14;
+    }
+    else if (strcmp(cmd_name, "unsetenv") == 0)
+    {
+        id_cmd = 15;
+    }
+    else if (strcmp(cmd_name, "kjobs") == 0)
+    {
+        id_cmd = 16;
+    }
+    else if (strcmp(cmd_name, "job") == 0)
+    {
+        id_cmd = 17;
     }
 
     return id_cmd;
@@ -588,9 +638,9 @@ void exec_simple_cmd(struct simple_cmd *ptr)
     //sleep(1);
     //////////////??EXECUTE IT???????????????????????????//
 
-    if(ptr->simple_args_num==0)
+    if (ptr->simple_args_num == 0)
     {
-        fprintf(stderr,"ERROR in shell: empty command\n");
+        fprintf(stderr, "ERROR in shell: empty command\n");
         return;
     }
 
@@ -689,7 +739,34 @@ void exec_simple_cmd(struct simple_cmd *ptr)
         {
             exec_unset_env_var(offload_ptr);
         }
-        
+        else if (id_cmd == 11)
+        {
+            exec_unset_env_var(offload_ptr);
+        }
+        else if (id_cmd == 12)
+        {
+            exec_unset_env_var(offload_ptr);
+        }
+        else if (id_cmd == 13)
+        {
+            exec_unset_env_var(offload_ptr);
+        }
+        else if (id_cmd == 14)
+        {
+            exec_unset_env_var(offload_ptr);
+        }
+        else if (id_cmd == 15)
+        {
+            exec_unset_env_var(offload_ptr);
+        }
+        else if (id_cmd == 16)
+        {
+            exec_unset_env_var(offload_ptr);
+        }
+        else if (id_cmd == 17)
+        {
+            exec_unset_env_var(offload_ptr);
+        }
     }
     else
     {

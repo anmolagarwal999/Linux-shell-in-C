@@ -1,20 +1,20 @@
-cat tmpfile
-cat tempfile
-cut -d : -f 7 /etc/passwd | sort | head
-cut -d : -f 7 /etc/passwd | sort | uniq -c | sort -nr | head -n 4
-tail -n 2 /etc/passwd | head -n 1
-ls -s | sort -nr | head -n 5
-ls -l
-vim A_file.cpp &
-ps
-kill -SIGKILL 26520
-ls
-setenv HOME /home
-unsetenf id d
-unsetenv id ddd
-unsetenv HOME
+ping www.google.com
+g++ dp+prob.cpp -o b
+g++ dp_prob.cpp -o b
+./b
 exit
+./b
+exit
+ls
+ls ..
 ps
-jobs
-sleep 2 &
-sleep 3 &
+./b
+exit
+./b
+exit
+ls
+./b &
+pinfo 27156
+./b
+fg
+exit

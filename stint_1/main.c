@@ -8,14 +8,57 @@ char shell_dir_path[1024];
 char history_file_path[1024];
 char *hist_cmds[22];
 
-int script_pid, num_jobs_cmd, curr_history_num,curr_job_id;
+int script_pid, num_jobs_cmd, curr_history_num, curr_job_id, curr_fg_pid;
 
 #define jobs_ptr_sz 50
 struct jobs_cmd *jobs_ptr[jobs_ptr_sz];
 
+void sigint_handler()
+{
+    printf("SIGINT HANDLER\n");
+    printf("pid live is %d\n", getpid());
+    printf("script_pid is %d\n", script_pid);
+    if (getpid() == script_pid)
+    {
+        part2;
+        // printf("Weird stuff is happening\n");
+        printf("No foreground process to terminate\n");
+        part2;
+    }
+    else
+    {
+        part2;
+        printf("Weird stuff is happening\n");
+        // printf("No foreground process to terminate\n");
+        part2;
+    }
+}
+
+void sigtstp_handler()
+{
+    printf("SIGTSTP HANDLER\n");
+    printf("pid live is %d\n", getpid());
+    printf("script_pid is %d\n", script_pid);
+    if (getpid() == script_pid)
+    {
+        part2;
+        // printf("Weird stuff is happening\n");
+        printf("No foreground process to send_to_background\n");
+        part2;
+    }
+    else
+    {
+        part2;
+        printf("Weird stuff is happeningin sigtstp handler\n");
+        // printf("No foreground process to terminate\n");
+        part2;
+    }
+}
 void init_stuff()
 {
     signal(SIGCHLD, reapChild);
+    signal(SIGINT, sigint_handler);
+    signal(SIGTSTP, sigtstp_handler);
 
     //getting home_dir
     get_pwd_path_no_print(home_dir_path);
@@ -30,17 +73,18 @@ void init_stuff()
 
     //initially,  number of background commands is zero
     num_jobs_cmd = 0;
-    curr_job_id=1;
+    curr_job_id = 1;
+    curr_fg_pid = -1;
 
     //init bg struct
     for (int i = 0; i < jobs_ptr_sz; i++)
     {
         jobs_ptr[i] = (struct jobs_cmd *)malloc(sizeof(struct jobs_cmd));
         jobs_ptr[i]->pid = -2;
-        jobs_ptr[i]->jid=-1;
+        jobs_ptr[i]->jid = -1;
         jobs_ptr[i]->cmd_name[0] = '\0';
         jobs_ptr[i]->cmd_stat = -1;
-        jobs_ptr[i]->is_relevant=-1;
+        jobs_ptr[i]->is_relevant = -1;
     }
 
     ////////////////////
@@ -83,7 +127,7 @@ int main()
     yellow_color();
     printf("Welcome to my shell !!!\n");
     reset_color();
-    printf("pid() is main is %d\n",getpid());
+    printf("pid() is main is %d\n", getpid());
 
     while (true)
     {
@@ -103,11 +147,11 @@ int main()
         ssize_t chars_read; //stores number of characters read by the getline func
         //&cmd_input needed as in case the buffer gets changed to a different loc, we need it to get updated there
         chars_read = getline(&cmd_input, &cmd_buffer_sz, stdin);
-        printf("pid terminal is %d\n",getpid());
+        printf("pid terminal is %d\n", getpid());
         if (chars_read == -1)
         {
-            
-            perror("getline() error:");
+
+            printf("getline() error: EOF detected");
             return 0;
             //printf("WEIRD INPUT ERROR AS first char of input surprisingly had null char\n");
         }
