@@ -1,12 +1,3 @@
-sleep 20 &
-overkill
-quit
-cd ../
-cd ..
-ls
-cd ~
-exit
-cd ..
 pwd
 cd ..
 exit
@@ -17,4 +8,13 @@ exit
 cd ..
 cd - 
 cd -
+exit
+ls ; ps
+exit
+ls ; echo abc; ps
+exit
+ls > <
+ls > >>
+sleep 100 &
+./b
 exit

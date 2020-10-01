@@ -11,14 +11,25 @@ void yellow_color()
     printf("\033[1;33m");
 }
 
+
+void err_yellow_color()
+{
+    fprintf(stderr,"\033[1;33m");
+}
+
 void reset_color()
 {
     printf("\033[0m");
 }
 
+void err_reset_color()
+{
+    fprintf(stderr,"\033[0m");
+}
+
 void cyan_color()
 {
-    printf("\x1b[34m");
+    printf("\x1b[33m");
 }
 
 

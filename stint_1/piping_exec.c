@@ -1,6 +1,7 @@
 #include "global_vars.h"
 #include "master_header.h"
 
+// arg is of form cmd 1 <>
 // struct simple_cmd
 // {
 
@@ -12,6 +13,7 @@
 //     char *append_file_name;
 // };
 
+// arg is of form cmd1<> | cmd2 <> |cmd3 <>
 // struct master_cmd
 // {
 //     int number_of_piped_cmds;
@@ -51,14 +53,19 @@ void init_simple_cmd_struct(struct simple_cmd *ptr)
     }
 }
 
+// arg is of form cmd1<> | cmd2 <> |cmd3 <>
 void populate_cmd_master(char *input_to_master)
 {
     struct master_cmd *curr_master = (struct master_cmd *)malloc(sizeof(struct master_cmd));
     init_master_cmd_struct(curr_master);
     parse_cmd_for_master(input_to_master, curr_master);
-    separate_piped_cmds(curr_master);
-    //     debug_master_cmd(curr_master);
-    //return;
+    int sep_stat = separate_piped_cmds(curr_master);
+    if (sep_stat == -1)
+    {
+        //some error while breaking tokens as per piping conventions
+        return;
+    }
+
     begin_exec(curr_master);
 }
 
@@ -77,7 +84,9 @@ int separate_piped_cmds(struct master_cmd *ptr)
             {
                 //pipe operator is not succeeded by space -> bad omen
                 //invalid command
+                cyan_color();
                 fprintf(stderr, "ERROR in cmd format: piping operator has not been succeeded by space\n");
+                reset_color();
                 return -1;
             }
             else
@@ -94,6 +103,7 @@ int separate_piped_cmds(struct master_cmd *ptr)
         }
     }
 
+    //number of cmds is expected tobe one more than number of pipes
     ptr->number_of_piped_cmds = simple_cmd_now_idx + 1;
     return 0;
 }
@@ -130,11 +140,10 @@ void debug_master_cmd(struct master_cmd *ptr)
 
 void parse_cmd_for_master(char *cmd_input, struct master_cmd *ptr)
 {
-    // printf("trying to parse cmd\n");
-    // printf("To be parsed is %s\n", cmd_input);
+    // master_cmd_args is of form s1 s2 s3 | s4 s5 s6 |  s7 s8 ... NULL
 
     ptr->master_args_num = 0;
-    //ptr->is_bg = 0;
+
     //https://man7.org/linux/man-pages/man3/strtok.3.html
     char delims[] = " \t\r\n";
     char *token_beg;
@@ -148,27 +157,6 @@ void parse_cmd_for_master(char *cmd_input, struct master_cmd *ptr)
 
     //FOR EXECVP,cd-number of args spotting etc, ARG LIST MUST END WITH A NULL CHARACTER
     ptr->master_cmd_args[ptr->master_args_num] = NULL;
-
-    // master_cmd_args is of form s1 s2 s3 | s4 s5 s6 |  s7 s8 ... NULL
-}
-
-#define PROGNAME "my_shell_progname"
-
-static void report_error_and_exit_helper(const char *message, void (*exit_func)(int))
-{
-    fprintf(stderr, "%s: error: %s (system: %s)\n",
-            PROGNAME, message ? message : "", strerror(errno));
-    exit_func(EXIT_FAILURE);
-}
-
-static void report_error_and_exit(const char *message)
-{
-    report_error_and_exit_helper(message, exit);
-}
-
-static void _report_error_and_exit(const char *message)
-{
-    report_error_and_exit_helper(message, _exit);
 }
 
 /* move oldfd to newfd */
@@ -179,6 +167,8 @@ void redirect(int oldfd, int newfd)
     {
         // printf("oldfd is %d\n", oldfd);
         // printf("newfd is %d\n", newfd);
+        /* Duplicate FD to FD2, closing FD2 and making it open on the same file.  */
+
         int status_check = dup2(oldfd, newfd);
         // printf("stat_check  is %d\n", status_check);
         // fflush(stdout);
@@ -186,7 +176,7 @@ void redirect(int oldfd, int newfd)
         if (status_check != -1)
             close(oldfd); /* successfully redirected */
         else
-            _report_error_and_exit("dup2");
+            perror("dup2");
     }
     // printf("exited transition\n");
 }
@@ -479,9 +469,9 @@ void exec_simple_cmd(struct simple_cmd *ptr)
     //after removal of fork, this process piping needs are set, just treat it as a normal redirection now
     //fd's inherited, pipes, STDIN, STDOUT,
 
+    //currently STDIN and STDOUT of parent also points to the corresponding pipes
+
     int i;
-    // redirect(expected_in, STDIN_FILENO);   /* <&in  : child reads from in */
-    // redirect(expected_out, STDOUT_FILENO); /* >&out : child writes to out */
 
     // fprintf(stderr,"Executing %s\n", ptr->simple_cmd_args[0]);
     int stat_redirect[3] = {0, 0, 0};
@@ -497,8 +487,10 @@ void exec_simple_cmd(struct simple_cmd *ptr)
     if (output_to_file == 1 && append_to_file == 1)
     {
         //Multiple redirections, out of scope
+        err_yellow_color();
         fprintf(stderr, "Multiple redirections -> out of scope as TA said\n");
-        exit(0);
+        err_reset_color();
+        goto restoration;
     }
 
     int proposed_fd_in = -1, proposed_fd_out = -1;
@@ -507,7 +499,7 @@ void exec_simple_cmd(struct simple_cmd *ptr)
         if (ptr->input_file_name == NULL)
         {
             fprintf(stderr, "No argument supplied for input redirection\n");
-            exit(0);
+            goto restoration;
         }
         else
         {
@@ -516,10 +508,8 @@ void exec_simple_cmd(struct simple_cmd *ptr)
             if (proposed_fd_in < 0)
             {
                 perror("Error while opening input file");
-                exit(-1);
+                goto restoration;
             }
-            // dup2(proposed_fd_in, STDIN_FILENO);
-            // close(proposed_fd_in);
 
             redirect(proposed_fd_in, STDIN_FILENO);
         }
@@ -619,8 +609,6 @@ void exec_simple_cmd(struct simple_cmd *ptr)
         ptr->simple_args_num = curr_idx;
         // fprintf(stderr,"curr_idx is %d\n", curr_idx);
         ptr->simple_cmd_args[curr_idx] = NULL;
-
-        //fprintf(stderr,"failure to shift\n");
     }
     else
     {
@@ -640,14 +628,16 @@ void exec_simple_cmd(struct simple_cmd *ptr)
 
     if (ptr->simple_args_num == 0)
     {
+        err_yellow_color();
         fprintf(stderr, "ERROR in shell: empty command\n");
-        return;
+        err_reset_color();
+        goto restoration;
     }
 
     ///////////////////////////////////////////////////////////////////////////////
     struct cmd_var *offload_ptr = (struct cmd_var *)malloc(sizeof(struct cmd_var));
 
-    //checking if bg
+    // Resetting is_bg
     offload_ptr->is_bg = 0;
     int tot_args = ptr->simple_args_num;
 
@@ -758,7 +748,6 @@ void exec_simple_cmd(struct simple_cmd *ptr)
         }
         else if (id_cmd == 15)
         {
-            
         }
         else if (id_cmd == 16)
         {
@@ -766,7 +755,7 @@ void exec_simple_cmd(struct simple_cmd *ptr)
         }
         else if (id_cmd == 17)
         {
-            exec_unset_env_var(offload_ptr);
+            exec_jobs_cmd();
         }
     }
     else
@@ -778,7 +767,7 @@ void exec_simple_cmd(struct simple_cmd *ptr)
     }
 
     //execute////////////////////////////////////////////////
-
+restoration:
     if (input_from_file == 1)
     {
         redirect(preserve_fd_in, STDIN_FILENO);
@@ -809,8 +798,8 @@ int begin_exec(struct master_cmd *ptr)
     /* run all commands but the last */
     int i = 0;
 
-    int org_std_in = dup(STDIN_FILENO);
-    int org_std_out = dup(STDOUT_FILENO);
+    int org_std_in = dup(STDIN_FILENO);   //org_in points to shell input
+    int org_std_out = dup(STDOUT_FILENO); //org_out points to shell_output
 
     int pipes_fd[n][2];
 
@@ -823,11 +812,11 @@ int begin_exec(struct master_cmd *ptr)
 
         if (i < n - 1)
         {
-            //this cmd is not at last
+            //this cmd is not at last, pipe generation needed
             if (pipe(pipes_fd[i]) == -1)
             {
                 //error while generating pipe
-                report_error_and_exit("pipe");
+                perror("pipe");
             }
         }
 
@@ -837,6 +826,7 @@ int begin_exec(struct master_cmd *ptr)
 
             //read from STDIN
 
+            //pipes fd[0][WRITE_end] points to STDOUT
             dup2(pipes_fd[i][1], STDOUT_FILENO);
 
             exec_simple_cmd(&ptr->atomic_cmd[i]);
@@ -847,8 +837,10 @@ int begin_exec(struct master_cmd *ptr)
         {
             //last cmd
 
+            /* Duplicate FD to FD2, closing FD2 and making it open on the same file.  */
             dup2(pipes_fd[i - 1][0], STDIN_FILENO);
 
+            //OUTPUT is definitely STDOUT for the last cmd
             dup2(org_std_out, STDOUT_FILENO);
 
             //exec command
@@ -870,86 +862,6 @@ int begin_exec(struct master_cmd *ptr)
             //closing both in parent
             close(pipes_fd[i - 1][0]);
             close(pipes_fd[i][1]);
-        }
-
-        //////commented stuff
-        {
-            // int fd[2];
-            // printf("i is %d\n", i);
-
-            // if (pipe(fd) == -1)
-            // {
-            //     //error while generating pipe
-            //     report_error_and_exit("pipe");
-            // }
-
-            // pid_t child_pid = fork();
-            // if (child_pid == -1)
-            // {
-            //     //error while forking
-            //     perror("Error during fork() details");
-            // }
-            // else if (child_pid == 0)
-            // {
-
-            //     //exclusively in the child
-            //     /* run command[i] in the child process */
-
-            //     // the 'pipe[0]' ie read end of them pipe is of no use here as child runs cmd 1 in cmd 1 | cmd 2 and fd[0] is read_end for cmd2 and not for cmd 1
-            //     //we are closing this end only in CHILD and not in PARENT
-
-            //     //'in_fd' is the read end of the pipe | in 'cmd_0 | cmd_1' where this current child is executing cmd_1
-
-            //     /* close unused read end of the pipe */
-            //     if (close(fd[0]) == -1)
-            //     {
-            //         perror("Error in closing fd[0]");
-            //     }
-
-            //     if (i == n - 1)
-            //     {
-            //         //return ;
-            //         printf("last straw\n");
-            //         exec_simple_cmd(&ptr->atomic_cmd[i], in_fd, STDOUT_FILENO); /* $ command < in */
-            //     }
-            //     else
-            //     {
-            //         exec_simple_cmd(&ptr->atomic_cmd[i], in_fd, fd[1]); /* FORMAT is as follows ::::  $ command < in > fd[1] */
-            //     }
-            //     exit(0);
-            // }
-            // else
-            // { /* parent */
-
-            //     //////////////ADD WAIT STATEMENT HERE ??????????????????????????????????????????????///
-
-            //     ////WAIT/////
-
-            //     /////////////////////////////////////////////////////////////////////
-            //     //assert(pid > 0);
-
-            //     //necessary to close this otherwise read of cmd_2 will never terminate as it will always see an active 'write_end'
-            //     if (close(fd[1]) == -1)
-            //     {
-            //         perror("Error in closing fd[1]");
-            //     }
-            //     int status_child;
-            //     if ((child_pid = waitpid(child_pid, &status_child, 0)) == -1)
-            //     {
-            //         perror("wait() error");
-            //     }
-
-            //     //in is still set to 'read_end' of pipe | of  'cmd_0 | cmd_1' which is something we no longer need as the command in
-            //     //fg has already been executed as is evident from the wait cmd
-
-            //     /* close unused read end of the previous pipe */
-            //     if (close(in_fd) == -1)
-            //     {
-            //         perror("Error in closing in_fd");
-            //     }
-
-            //     in_fd = fd[0]; /* the next command reads from here */
-            // }
         }
     }
 
