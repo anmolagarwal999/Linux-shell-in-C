@@ -74,7 +74,12 @@ void reapChild(int signum)
 
                             if (WIFSTOPPED(stat_loc))
                             {
+                                //Also, we need to change status of job to stopped
+
+
+
                                 int stopping_signal_number= WSTOPSIG(stat_loc);
+                                jobs_ptr[i]->cmd_stat = 2;                            
                                 fprintf(stderr, "%s with pid [%d] and jid [%d] -> STOPPED with signal number %d\n", jobs_ptr[i]->cmd_name, jobs_ptr[i]->pid, jobs_ptr[i]->jid,stopping_signal_number);
                             }
                         }

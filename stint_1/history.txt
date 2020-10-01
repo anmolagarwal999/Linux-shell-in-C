@@ -3,13 +3,6 @@ exit
 ./b
 exit
 ls
-ls ..
-ps
-./b
-exit
-./b
-exit
-ls
 ./b &
 pinfo 27156
 ./b
@@ -17,4 +10,11 @@ fg
 exit
 ./b &
 ls
+exit
+./b
+exit
+fg 2 &
+exit
+vim T.cpp &
+fg 1
 exit

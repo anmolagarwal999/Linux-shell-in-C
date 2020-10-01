@@ -741,7 +741,7 @@ void exec_simple_cmd(struct simple_cmd *ptr)
         }
         else if (id_cmd == 11)
         {
-            exec_unset_env_var(offload_ptr);
+            exec_fg(offload_ptr);
         }
         else if (id_cmd == 12)
         {
