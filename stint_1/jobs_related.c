@@ -155,7 +155,23 @@ void exec_fg(struct cmd_var *ptr)
 this signal is ignored by default.
  A process may catch this signal, so that it carries out some action when it resumes.*/
 
-    kill(child_pid, SIGCONT);
+    int kill_stat = kill(child_pid, SIGCONT);
+    if (kill_stat == -1)
+    {
+        perror("Error while kill()");
+        tcsetpgrp(0, getpid());
+
+        //Since terminal restores to self,no longer ignore signals
+        signal(SIGTTOU, SIG_DFL);
+        signal(SIGTTIN, SIG_DFL);
+        //exit(0);
+
+        printf("Wait over\n");
+        curr_fg_pid = -1;
+
+        return ;
+    }
+
     fflush(stdout);
     int fg_stat;
     short stat_temp = waitpid(child_pid, &fg_stat, WUNTRACED);
@@ -191,7 +207,7 @@ this signal is ignored by default.
         //bg job with status=stopped
         jobs_ptr[job_idx]->is_relevant = 1;
         int stopping_signal_number = WSTOPSIG(fg_stat);
-        int i=job_idx;
+        int i = job_idx;
         jobs_ptr[i]->cmd_stat = 2;
         fprintf(stderr, "%s with pid [%d] and jid [%d] -> STOPPED with signal number %d\n", jobs_ptr[i]->cmd_name, jobs_ptr[i]->pid, jobs_ptr[i]->jid, stopping_signal_number);
         jobs_ptr[job_idx]->cmd_stat = 2;
@@ -201,6 +217,76 @@ this signal is ignored by default.
         //bg job which was brought to fg has exited
         jobs_ptr[job_idx]->is_relevant = 0;
     }
+
+    /////////////////////////////////////////////////////////////////////////////////////
+}
+
+/*Changes the state of a stopped background job to running (in the
+background). The shell should throw an error if no background job
+corresponding to the given job number exists, and do nothing if the job*/
+
+void exec_bg(struct cmd_var *ptr)
+{
+    // struct cmd_var
+    // {
+    //     int arg_num;
+    //     char *cmd_args[max_poss_args];
+    //     int is_bg;
+    // };
+
+    printf("number of args are %d\n", ptr->arg_num);
+
+    if (ptr->arg_num != 2)
+    {
+        fprintf(stderr, "Invalid number of args for bg\n");
+        return;
+    }
+
+    int job_id = atoi(ptr->cmd_args[1]);
+
+    if (job_id - 1 < 0 || job_id - 1 > curr_job_id - 1)
+    {
+        fprintf(stderr, "Invalid job id\n");
+        return;
+    }
+
+    int job_idx = job_id - 1;
+    if (jobs_ptr[job_idx]->is_relevant == 0)
+    {
+        fprintf(stderr, "Job with this job id is neither running nor stopped\n");
+        return;
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////////////
+
+    //It's Child is FOREGROUND PROCESS
+    //fprintf(stderr,"in parent\n");
+    int child_pid = jobs_ptr[job_idx]->pid;
+    //fflush(stdout);
+
+    //https://www.gnu.org/software/libc/manual/html_node/Foreground-and-Background.html#Foreground-and-Background
+
+    /* When child is foreground job , parent must first give 
+           child access to the controlling terminal.*/
+
+    //0 is fd for STDIN
+    setpgid(child_pid, 0);
+
+
+    int kill_stat = kill(child_pid, SIGCONT);
+    if (kill_stat == -1)
+    {
+        perror("Error while kill()");
+        return ;
+    }
+    else
+    {
+        //change status to running
+        jobs_ptr[job_idx]->cmd_stat=1;
+    }
+    
+
+    
 
     /////////////////////////////////////////////////////////////////////////////////////
 }
