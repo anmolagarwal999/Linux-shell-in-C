@@ -458,11 +458,11 @@ int get_cmd_id_piped(char *cmd_name)
     {
         id_cmd = 14;
     }
-    else if (strcmp(cmd_name, "unsetenv") == 0)
-    {
-        id_cmd = 15;
-    }
-    else if (strcmp(cmd_name, "kjobs") == 0)
+    // else if (strcmp(cmd_name, "unsetenv") == 0)
+    // {
+    //     id_cmd = 15;
+    // }
+    else if (strcmp(cmd_name, "kjob") == 0)
     {
         id_cmd = 16;
     }
@@ -723,7 +723,7 @@ void exec_simple_cmd(struct simple_cmd *ptr)
             }
             display_history(reqd);
         }
-        else if (id_cmd == 7)
+        else if (id_cmd == 7 || id_cmd == 14)
         {
             exit(0);
         }
@@ -749,19 +749,20 @@ void exec_simple_cmd(struct simple_cmd *ptr)
         }
         else if (id_cmd == 13)
         {
-            exec_unset_env_var(offload_ptr);
+            //overkill
+            exec_overkill(offload_ptr);
         }
         else if (id_cmd == 14)
         {
-            exec_unset_env_var(offload_ptr);
+            // already included in 7
         }
         else if (id_cmd == 15)
         {
-            exec_unset_env_var(offload_ptr);
+            
         }
         else if (id_cmd == 16)
         {
-            exec_unset_env_var(offload_ptr);
+            exec_kjob(offload_ptr);
         }
         else if (id_cmd == 17)
         {

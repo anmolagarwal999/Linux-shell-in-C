@@ -31,7 +31,8 @@ void reapChild(int signum)
                 if (jobs_ptr[i]->pid == suspected_pid)
                 {
                     //genuine process
-                    //  printf("genuine process with pid %d\n", jobs_ptr[i]->pid);
+                    printf("found %d at idx %d\n", suspected_pid, i);
+                    printf("genuine process cmd stat is  %d\n", jobs_ptr[i]->cmd_stat);
                     if (jobs_ptr[i]->cmd_stat == 1 || jobs_ptr[i]->cmd_stat == 2)
                     {
                         //possible change in behaviour or has exited
@@ -45,9 +46,11 @@ void reapChild(int signum)
                         //////////////////////////////////////////////////////////
                         // [<jid>] (<pid>) terminated with exit status <status>
                         //////////////////////////////////////////////////////////////
+                        printf("Entered initial if condition\n");
                         if (WIFEXITED(stat_loc))
                         {
                             jobs_ptr[i]->is_relevant = 0;
+                            printf("made is relevant as 0\n");
 
                             if (WEXITSTATUS(stat_loc) == EXIT_SUCCESS)
                             {
@@ -76,11 +79,28 @@ void reapChild(int signum)
                             {
                                 //Also, we need to change status of job to stopped
 
+                                int stopping_signal_number = WSTOPSIG(stat_loc);
+                                jobs_ptr[i]->cmd_stat = 2;
+                                fprintf(stderr, "%s with pid [%d] and jid [%d] -> STOPPED with signal number %d\n", jobs_ptr[i]->cmd_name, jobs_ptr[i]->pid, jobs_ptr[i]->jid, stopping_signal_number);
+                            }
 
+                            /* WIFSIGNALED(stat_val)
+                          Evaluates to a non-zero value if status was returned for a
+                         child process that terminated due to the receipt of a signal
+                             that was not caught (see <signal.h>).
 
-                                int stopping_signal_number= WSTOPSIG(stat_loc);
-                                jobs_ptr[i]->cmd_stat = 2;                            
-                                fprintf(stderr, "%s with pid [%d] and jid [%d] -> STOPPED with signal number %d\n", jobs_ptr[i]->cmd_name, jobs_ptr[i]->pid, jobs_ptr[i]->jid,stopping_signal_number);
+                        WTERMSIG(stat_val)
+                         If the value of WIFSIGNALED(stat_val) is non-zero, this macro
+                      evaluates to the number of the signal that caused the
+                             termination of the child process.*/
+
+                             else if (WIFSIGNALED(stat_loc))
+                            {
+                                //Also, we need to change status of job to stopped
+
+                                int terminating_signal_number = WTERMSIG(stat_loc);
+                                jobs_ptr[i]->is_relevant = 0;
+                                fprintf(stderr, "%s with pid [%d] and jid [%d] -> TERMINATED with signal number %d\n", jobs_ptr[i]->cmd_name, jobs_ptr[i]->pid, jobs_ptr[i]->jid, terminating_signal_number);
                             }
                         }
 

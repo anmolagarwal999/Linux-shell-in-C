@@ -169,7 +169,7 @@ this signal is ignored by default.
         printf("Wait over\n");
         curr_fg_pid = -1;
 
-        return ;
+        return;
     }
 
     fflush(stdout);
@@ -257,36 +257,99 @@ void exec_bg(struct cmd_var *ptr)
         return;
     }
 
-    ///////////////////////////////////////////////////////////////////////////////////////
-
-    //It's Child is FOREGROUND PROCESS
-    //fprintf(stderr,"in parent\n");
     int child_pid = jobs_ptr[job_idx]->pid;
-    //fflush(stdout);
 
-    //https://www.gnu.org/software/libc/manual/html_node/Foreground-and-Background.html#Foreground-and-Background
-
-    /* When child is foreground job , parent must first give 
-           child access to the controlling terminal.*/
-
-    //0 is fd for STDIN
     setpgid(child_pid, 0);
-
 
     int kill_stat = kill(child_pid, SIGCONT);
     if (kill_stat == -1)
     {
         perror("Error while kill()");
-        return ;
+        return;
     }
     else
     {
         //change status to running
-        jobs_ptr[job_idx]->cmd_stat=1;
+        jobs_ptr[job_idx]->cmd_stat = 1;
     }
-    
+}
 
-    
+/*kjob <job number> <signal number>
+Takes the job number (assigned by your shell) of a running job and
+sends the signal corresponding to ​signal number​to that process. The
+shell should throw an error if no job with the given number exists. For a
+list of signals, look up the manual entry for 'signal' on manual page*/
 
-    /////////////////////////////////////////////////////////////////////////////////////
+void exec_kjob(struct cmd_var *ptr)
+{
+    // struct cmd_var
+    // {
+    //     int arg_num;
+    //     char *cmd_args[max_poss_args];
+    //     int is_bg;
+    // };
+
+    printf("number of args are %d\n", ptr->arg_num);
+
+    if (ptr->arg_num != 3)
+    {
+        fprintf(stderr, "Invalid number of args for kjob\n");
+        return;
+    }
+
+    int job_id = atoi(ptr->cmd_args[1]);
+    int sig_to_send = atoi(ptr->cmd_args[2]);
+
+    if (job_id - 1 < 0 || job_id - 1 > curr_job_id - 1)
+    {
+        fprintf(stderr, "Invalid job id\n");
+        return;
+    }
+
+    int job_idx = job_id - 1;
+    if (jobs_ptr[job_idx]->is_relevant == 0)
+    {
+        fprintf(stderr, "Invalid job: Job with this job id is neither running nor stopped\n");
+        return;
+    }
+
+    int child_pid = jobs_ptr[job_idx]->pid;
+
+    int kill_stat = kill(child_pid, sig_to_send);
+    if (kill_stat == -1)
+    {
+        perror("Error while kjob()");
+        return;
+    }
+}
+
+void exec_overkill(struct cmd_var *ptr)
+{
+    // struct cmd_var
+    // {
+    //     int arg_num;
+    //     char *cmd_args[max_poss_args];
+    //     int is_bg;
+    // };
+
+    printf("number of args are %d\n", ptr->arg_num);
+
+    if (ptr->arg_num != 1)
+    {
+        fprintf(stderr, "Only one token : overkill is expected\n");
+        return;
+    }
+
+    for (int i = 0; i < num_jobs_cmd; i++)
+    {
+        if (jobs_ptr[i]->is_relevant == 1)
+        {
+            int kill_stat = kill(jobs_ptr[i]->pid,SIGKILL);
+            if (kill_stat == -1)
+            {
+                perror("Error while killing a Background process");
+                return;
+            }
+        }
+    }
 }
