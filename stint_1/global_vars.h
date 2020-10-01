@@ -48,7 +48,7 @@ struct simple_cmd
     char *append_file_name;
 };
 
-#define jobs_ptr_sz 50
+#define jobs_ptr_sz 100
 extern struct jobs_cmd *jobs_ptr[jobs_ptr_sz];
 extern char *hist_cmds[22];
 

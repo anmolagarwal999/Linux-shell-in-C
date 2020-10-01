@@ -1,6 +1,7 @@
 #ifndef PROMPT_HEADER
 #define PROMPT_HEADER
 
+void cyan_color();
 void red_color();
 void yellow_color();
 void reset_color();

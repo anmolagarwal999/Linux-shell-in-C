@@ -16,6 +16,12 @@ void reset_color()
     printf("\033[0m");
 }
 
+void cyan_color()
+{
+    printf("\x1b[34m");
+}
+
+
 //////////////////////////////
 void get_username_linux(char *username_str)
 {

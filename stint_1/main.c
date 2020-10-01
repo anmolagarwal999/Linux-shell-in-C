@@ -11,26 +11,30 @@ char *hist_cmds[22];
 
 int script_pid, num_jobs_cmd, curr_history_num, curr_job_id, curr_fg_pid;
 
-#define jobs_ptr_sz 50
+//maximum number of jobs over the entire session of the shell
+#define jobs_ptr_sz 100
 struct jobs_cmd *jobs_ptr[jobs_ptr_sz];
 
 void sigint_handler()
 {
-    printf("SIGINT HANDLER\n");
-    printf("pid live is %d\n", getpid());
+    printf("inside SIGINT HANDLER\n");
+    printf("pid of invoking process is %d\n", getpid());
     printf("script_pid is %d\n", script_pid);
     if (getpid() == script_pid)
     {
         part2;
         // printf("Weird stuff is happening\n");
+        yellow_color();
         printf("No foreground process to terminate\n");
+        reset_color();
         part2;
     }
     else
     {
         part2;
+        red_color();
         printf("Weird stuff is happening\n");
-        // printf("No foreground process to terminate\n");
+        reset_color();
         part2;
     }
 }
@@ -43,15 +47,17 @@ void sigtstp_handler()
     if (getpid() == script_pid)
     {
         part2;
-        // printf("Weird stuff is happening\n");
+        yellow_color();
         printf("No foreground process to send_to_background\n");
+        reset_color();
         part2;
     }
     else
     {
         part2;
-        printf("Weird stuff is happeningin sigtstp handler\n");
-        // printf("No foreground process to terminate\n");
+        red_color();
+        printf("Weird stuff is happening in sigtstp handler\n");
+        reset_color();
         part2;
     }
 }
@@ -61,21 +67,19 @@ void init_stuff()
     signal(SIGINT, sigint_handler);
     signal(SIGTSTP, sigtstp_handler);
 
-    //getting home_dir
+    //storing path of new reference HOME in home_dir_path
     get_pwd_path_no_print(home_dir_path);
-    //printf("Home dir path is %s\n", home_dir_path);
 
-    //initially curr_dir is also SHELL HOME
+    //initially curr_dir is also SHELL HOME, also prev_dir_path initialized as home_dir_path
     get_pwd_path_no_print(curr_dir_path);
-    strcpy(prev_dir_path,curr_dir_path);
+    strcpy(prev_dir_path, curr_dir_path);
 
     //storing scipt_pid of the master ./a file
     script_pid = getpid();
-    //printf("SCRIPT pid is %d\n", script_pid);
 
     //initially,  number of background commands is zero
     num_jobs_cmd = 0;
-    curr_job_id = 1;
+    curr_job_id = 1; //this is the lowest available job id usable for assignment
     curr_fg_pid = -1;
 
     //init bg struct
@@ -86,10 +90,9 @@ void init_stuff()
         jobs_ptr[i]->jid = -1;
         jobs_ptr[i]->cmd_name[0] = '\0';
         jobs_ptr[i]->cmd_stat = -1;
-        jobs_ptr[i]->is_relevant = -1;
+        jobs_ptr[i]->is_relevant = 0;
     }
 
-    ////////////////////
     //setup history path
     LL len_home_dir = strlen(home_dir_path);
     for (int i = 0; i < len_home_dir; i++)
@@ -129,7 +132,8 @@ int main()
     yellow_color();
     printf("Welcome to my shell !!!\n");
     reset_color();
-    printf("pid() is main is %d\n", getpid());
+
+    printf("pid() of the shell is %d <just before entering while loop>\n", getpid());
 
     while (true)
     {
@@ -143,17 +147,17 @@ int main()
             display_prompt(username_ans, hostname_ans);
         }
 
-        //setting to zero before next command is read to be divided
-        colon_cmds_idx = 0;
-
         ssize_t chars_read; //stores number of characters read by the getline func
+
         //&cmd_input needed as in case the buffer gets changed to a different loc, we need it to get updated there
         chars_read = getline(&cmd_input, &cmd_buffer_sz, stdin);
-        printf("pid terminal is %d\n", getpid());
+        printf("pid of process invoking terminal is %d\n", getpid());
         if (chars_read == -1)
         {
 
-            printf("getline() error: EOF detected");
+            cyan_color();
+            printf("EOF detected\n");
+            reset_color();
             return 0;
             //printf("WEIRD INPUT ERROR AS first char of input surprisingly had null char\n");
         }
@@ -164,10 +168,12 @@ int main()
                 //i think redundant but still
                 continue;
             }
-            if (chars_read == 1 && cmd_input[0] == '\n')
-            {
-                printPrompt = false;
-            }
+
+            // if (chars_read == 1 && cmd_input[0] == '\n')
+            // {
+            //     printPrompt = false;
+            // }
+
             //handling the \n produced due to pressing enter
             cmd_input[chars_read - 1] = '\0';
 
@@ -178,6 +184,9 @@ int main()
             char delims[] = ";";
             char *token_beg;
 
+            //setting to zero before next command is read to be divided
+            colon_cmds_idx = 0;
+
             colon_cmds[colon_cmds_idx++] = token_beg = strtok(cmd_input, delims);
             while (token_beg != NULL)
             {
@@ -185,15 +194,18 @@ int main()
                 colon_cmds[colon_cmds_idx++] = token_beg = strtok(NULL, delims);
             }
 
+            //looping through the individual commands which have been seperated by colons
             for (i = 0; i < colon_cmds_idx; i++)
             {
                 if (colon_cmds[i] != NULL)
                 {
+                    //func in divide_input.c
                     execute_command_after_format(colon_cmds[i]);
                 }
             }
         }
-        //part;
+        part3;
     }
+
     return 0;
 }
