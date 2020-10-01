@@ -1,20 +1,20 @@
-sleep 30 &
-sleep 40 &
-overkill
-exit
-sleep 10 &
-sleep 21 &
-sleep 30 &
-overkill
-pinfo 7797
-exit
-sleep 11 &
-sleep 22 &
-overkill
-exit
-sleep 40 &
-quit
-sleep 10 &
 sleep 20 &
 overkill
 quit
+cd ../
+cd ..
+ls
+cd ~
+exit
+cd ..
+pwd
+cd ..
+exit
+cd ..
+exit
+cd ..
+exit
+cd ..
+cd - 
+cd -
+exit

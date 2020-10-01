@@ -8,6 +8,7 @@ extern char home_dir_path[1024];  //place from where shell is executed
 extern char curr_dir_path[1024];  //curr location in abs loc (improve)
 extern char shell_dir_path[1024]; //modifying curr_dir_path for NEW REFERENCE POINT
 extern char history_file_path[1024];
+extern char prev_dir_path[1024];
 
 //https://stackoverflow.com/questions/53256436/difference-of-pid-t-and-int-in-c
 //The pid_t data type is a signed integer type which is capable of representing a process ID.

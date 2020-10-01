@@ -4,6 +4,7 @@
 
 char home_dir_path[1024];
 char curr_dir_path[1024];
+char prev_dir_path[1024];
 char shell_dir_path[1024];
 char history_file_path[1024];
 char *hist_cmds[22];
@@ -66,6 +67,7 @@ void init_stuff()
 
     //initially curr_dir is also SHELL HOME
     get_pwd_path_no_print(curr_dir_path);
+    strcpy(prev_dir_path,curr_dir_path);
 
     //storing scipt_pid of the master ./a file
     script_pid = getpid();
