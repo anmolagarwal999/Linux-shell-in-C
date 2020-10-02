@@ -357,7 +357,7 @@ void handle_system_cmd_piped(struct cmd_var *ptr)
                 }
                 else
                 {
-                    fprintf(stderr,"foreground process exitted abnormally->legendary=0\n");
+                    fprintf(stderr, "foreground process exitted abnormally->legendary=0\n");
                     is_legendary = 0;
                 }
             }
@@ -515,6 +515,7 @@ void exec_simple_cmd(struct simple_cmd *ptr)
         if (ptr->input_file_name == NULL)
         {
             fprintf(stderr, "No argument supplied for input redirection\n");
+            input_from_file = 0;
             goto restoration;
         }
         else
@@ -524,6 +525,7 @@ void exec_simple_cmd(struct simple_cmd *ptr)
             if (proposed_fd_in < 0)
             {
                 perror("Error while opening input file");
+                input_from_file = 0;
                 goto restoration;
             }
 
@@ -536,7 +538,9 @@ void exec_simple_cmd(struct simple_cmd *ptr)
         if (ptr->output_file_name == NULL)
         {
             fprintf(stderr, "No argument supplied for output redirection\n");
-            exit(0);
+            output_to_file = 0;
+
+            goto restoration;
         }
         else
         {
@@ -544,7 +548,9 @@ void exec_simple_cmd(struct simple_cmd *ptr)
             if (proposed_fd_out < 0)
             {
                 perror("Error occurred while dealing with output file ");
-                exit(-2);
+                output_to_file = 0;
+
+                goto restoration;
             }
             // dup2(proposed_fd_out, STDOUT_FILENO);
             // close(proposed_fd_out);
@@ -560,7 +566,8 @@ void exec_simple_cmd(struct simple_cmd *ptr)
         if (ptr->append_file_name == NULL)
         {
             fprintf(stderr, "No argument supplied for append redirection\n");
-            exit(0);
+            append_to_file = 0;
+            goto restoration;
         }
         else
         {
@@ -568,7 +575,8 @@ void exec_simple_cmd(struct simple_cmd *ptr)
             if (proposed_fd_out < 0)
             {
                 perror("Error occurred while dealing with APPEND file ");
-                exit(-3);
+                append_to_file = 0;
+                goto restoration;
             }
             // dup2(proposed_fd_out, STDOUT_FILENO);
             // close(proposed_fd_out);
@@ -659,7 +667,7 @@ void exec_simple_cmd(struct simple_cmd *ptr)
 
     if (strcmp(ptr->simple_cmd_args[ptr->simple_args_num - 1], "&\0") == 0)
     {
-        fprintf(stderr, "it is a background job\n");
+        //fprintf(stderr, "it is a background job\n");
         offload_ptr->is_bg = 1;
 
         // & is no longer an argument

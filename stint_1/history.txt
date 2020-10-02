@@ -1,9 +1,3 @@
-ls .. $ ls ..
-ls ../ $ ls ..
-echo a $ echo b
-sudo apt update && sudo apt upgrade && sudo apt install tree
-true $  echo aaa @  echo bbb
-ls $ echo penguins
 ls @ echo penguins
 ls $ ls ..
 ls kdoe $ ls ..
@@ -18,3 +12,9 @@ ls
 exit
 ls
 ./b
+ls
+ls @ ps
+cd .. & ls
+cd .. $ ls
+cd - @ ls
+exit

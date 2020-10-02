@@ -5,7 +5,7 @@ void exec_cd_cmd(char *cd_input)
 {
     int status_cmd;
     char *set_path = cd_input;
-    printf("entered exec_cd cmd\n");
+   // printf("entered exec_cd cmd\n");
 
     if (cd_input == NULL)
     {
@@ -20,7 +20,7 @@ void exec_cd_cmd(char *cd_input)
     {
         set_path=prev_dir_path;
     }
-    printf("FILE WE ARE SEEKING IS %s\n", set_path);
+    //printf("FILE WE ARE SEEKING IS %s\n", set_path);
     status_cmd = chdir(set_path);
     //printf("status for chdir is %d\n",status_cmd);
     if (status_cmd < 0)
@@ -36,6 +36,6 @@ void exec_cd_cmd(char *cd_input)
 
         strcpy(prev_dir_path,curr_dir_path);
         get_pwd_path(curr_dir_path);
-        printf("CURR DIR IS %s\n",curr_dir_path);
+       // printf("CURR DIR IS %s\n",curr_dir_path);
     }
 }

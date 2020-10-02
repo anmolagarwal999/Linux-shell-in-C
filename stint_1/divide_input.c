@@ -5,6 +5,7 @@ typedef long long LL;
 void deal_with_ops(char *cmd_input)
 {
 
+// The return status of AND and OR lists is the exit status of the last command executed in the list.
     int i = 0;
     int len_cmd_input = strlen(cmd_input);
     char lb = 0, ub = 0;
@@ -15,7 +16,7 @@ void deal_with_ops(char *cmd_input)
         //debug(i);
         if (cmd_input[i] == '@')
         {
-            printf("\nAND\n");
+            //printf("\nAND\n");
             int pos_now = 0;
 
             for (int j = lb; j <= ub; j++)
@@ -46,7 +47,7 @@ void deal_with_ops(char *cmd_input)
         }
         else if (cmd_input[i] == '$')
         {
-            printf("\nOR\n");
+          //  printf("\nOR\n");
 
             int pos_now = 0;
 
@@ -101,7 +102,7 @@ void deal_with_ops(char *cmd_input)
     if (lb != len_cmd_input)
     {
         int pos_now = 0;
-        debug(lb);
+       // debug(lb);
 
         for (int j = lb; j <= ub; j++)
         {
@@ -117,13 +118,14 @@ void deal_with_ops(char *cmd_input)
    // printf("\n");
 
     fflush(stdout);
+    free(cmd_to_send);
 }
 
 void send_for_execution(char *cmd_input)
 {
     //https://man7.org/linux/man-pages/man3/strtok.3.html
 
-    printf("Attempting to execute %s\n", cmd_input);
+   // printf("Attempting to execute %s\n", cmd_input);
     //return;
     char delims[] = ";";
     char *token_beg;
@@ -158,7 +160,7 @@ void execute_command_after_format(char *cmd_input)
 {
 
     int len_cmd = strlen(cmd_input);
-    printf("input for execute command after format is %s with len %d\n", cmd_input, len_cmd);
+  //  printf("input for execute command after format is %s with len %d\n", cmd_input, len_cmd);
 
     if (cmd_input[len_cmd - 1] == '\n')
     {
@@ -179,6 +181,6 @@ void execute_command_after_format(char *cmd_input)
     strcpy(input_to_master, cmd_input);
 
     populate_cmd_master(input_to_master);
-
+    free(input_to_master);
     // execute_cmd(cmd_actual);
 }

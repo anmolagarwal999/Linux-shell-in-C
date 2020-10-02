@@ -17,9 +17,9 @@ struct jobs_cmd *jobs_ptr[jobs_ptr_sz];
 
 void sigint_handler()
 {
-    printf("inside SIGINT HANDLER\n");
-    printf("pid of invoking process is %d\n", getpid());
-    printf("script_pid is %d\n", script_pid);
+   // printf("inside SIGINT HANDLER\n");
+  //  printf("pid of invoking process is %d\n", getpid());
+   // printf("script_pid is %d\n", script_pid);
     if (getpid() == script_pid)
     {
         part2;
@@ -45,9 +45,9 @@ void sigint_handler()
 
 void sigtstp_handler()
 {
-    printf("SIGTSTP HANDLER\n");
-    printf("pid live is %d\n", getpid());
-    printf("script_pid is %d\n", script_pid);
+    // printf("SIGTSTP HANDLER\n");
+    // printf("pid live is %d\n", getpid());
+    // printf("script_pid is %d\n", script_pid);
     if (getpid() == script_pid)
     {
         part2;
@@ -141,7 +141,7 @@ int main()
     printf("Welcome to my shell !!!\n");
     reset_color();
 
-    printf("pid() of the shell is %d <just before entering while loop>\n", getpid());
+    //printf("pid() of the shell is %d <just before entering while loop>\n", getpid());
 
     while (true)
     {
@@ -159,7 +159,7 @@ int main()
 
         //&cmd_input needed as in case the buffer gets changed to a different loc, we need it to get updated there
         chars_read = getline(&cmd_input, &cmd_buffer_sz, stdin);
-        printf("pid of process invoking terminal is %d\n", getpid());
+       // printf("pid of process invoking terminal is %d\n", getpid());
         if (chars_read == -1)
         {
 

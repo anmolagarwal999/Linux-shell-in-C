@@ -31,8 +31,8 @@ void reapChild(int signum)
                 if (jobs_ptr[i]->pid == suspected_pid)
                 {
                     //genuine process
-                    printf("found %d at idx %d\n", suspected_pid, i);
-                    printf("genuine process cmd stat is  %d\n", jobs_ptr[i]->cmd_stat);
+                  //  printf("found %d at idx %d\n", suspected_pid, i);
+                   // printf("genuine process cmd stat is  %d\n", jobs_ptr[i]->cmd_stat);
                     if (jobs_ptr[i]->cmd_stat == 1 || jobs_ptr[i]->cmd_stat == 2)
                     {
                         //possible change in behaviour or has exited

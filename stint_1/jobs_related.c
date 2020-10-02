@@ -35,7 +35,7 @@ void get_job_pid(int search_jid, int *pid_fetched, int *idx_in_table)
 void add_job(int child_pid, struct cmd_var *ptr, int curr_cmd_stat)
 {
     //is bg cmd
-    fprintf(stderr, "adding a job in add_job\n");
+    // fprintf(stderr, "adding a job in add_job\n");
     //add new job -> background to the list
     jobs_ptr[num_jobs_cmd]->pid = child_pid;
     jobs_ptr[num_jobs_cmd]->cmd_name[0] = '\0';
@@ -58,6 +58,7 @@ void add_job(int child_pid, struct cmd_var *ptr, int curr_cmd_stat)
         printf("\t STOPPED");
     }
     printf("\n");
+    fflush(stdout);
 
     num_jobs_cmd++;
 }
@@ -100,8 +101,8 @@ void exec_fg(struct cmd_var *ptr)
     //     char *cmd_args[max_poss_args];
     //     int is_bg;
     // };
-    fprintf(stderr, "inside fg\n");
-    fprintf(stderr, "number of args are %d\n", ptr->arg_num);
+  //  fprintf(stderr, "inside fg\n");
+  //  fprintf(stderr, "number of args are %d\n", ptr->arg_num);
 
     if (ptr->arg_num != 2)
     {
@@ -178,7 +179,7 @@ this signal is ignored by default.
         signal(SIGTTIN, SIG_DFL);
         //exit(0);
 
-        printf("Wait over\n");
+        //printf("Wait over\n");
         curr_fg_pid = -1;
 
         return;
@@ -188,7 +189,7 @@ this signal is ignored by default.
     int fg_stat;
     short stat_temp = waitpid(child_pid, &fg_stat, WUNTRACED);
 
-    printf("fg_stat after waitpid is is %d\n", fg_stat);
+   // printf("fg_stat after waitpid is is %d\n", fg_stat);
 
     if (stat_temp == -1)
     {
@@ -207,7 +208,7 @@ this signal is ignored by default.
     signal(SIGTTIN, SIG_DFL);
     //exit(0);
 
-    printf("Wait over\n");
+   // printf("Wait over\n");
     curr_fg_pid = -1;
 
     /* WIFSTOPPED(wstatus)
@@ -234,7 +235,7 @@ this signal is ignored by default.
         }
         else
         {
-            fprintf(stderr, "foreground process exitted abnormally->legendary=0\n");
+           // fprintf(stderr, "foreground process exitted abnormally->legendary=0\n");
             is_legendary = 0;
         }
     }
@@ -255,8 +256,8 @@ void exec_bg(struct cmd_var *ptr)
     //     int is_bg;
     // };
 
-    fprintf(stderr, "inside bg\n");
-    fprintf(stderr, "number of args are %d\n", ptr->arg_num);
+  //  fprintf(stderr, "inside bg\n");
+   // fprintf(stderr, "number of args are %d\n", ptr->arg_num);
 
     if (ptr->arg_num != 2)
     {
@@ -335,8 +336,8 @@ void exec_kjob(struct cmd_var *ptr)
     //     int is_bg;
     // };
 
-    fprintf(stderr, "inside kjob\n");
-    fprintf(stderr, "number of args are %d\n", ptr->arg_num);
+   // fprintf(stderr, "inside kjob\n");
+ //   fprintf(stderr, "number of args are %d\n", ptr->arg_num);
 
     if (ptr->arg_num != 3)
     {
@@ -471,7 +472,7 @@ short get_pid_status(int query_pid)
             token_beg = strtok(NULL, delims);
         }
         close(fd);
-        printf("retrieved status string is %s\n", token_beg);
+       // printf("retrieved status string is %s\n", token_beg);
         if (token_beg[0] == 'T')
         {
             return 2;
