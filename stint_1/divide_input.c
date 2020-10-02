@@ -153,7 +153,7 @@ void send_for_execution(char *cmd_input)
             deal_with_ops(tmp_str);
         }
     }
-    part2;
+    //part2;
 }
 
 //Org command format= str1; str2; str3; str4

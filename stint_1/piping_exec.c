@@ -316,7 +316,7 @@ void handle_system_cmd_piped(struct cmd_var *ptr)
             int fg_stat_ptr;
             short stat_temp = waitpid(child_pid, &fg_stat_ptr, WUNTRACED);
 
-            fprintf(stderr, "fg_stat after waitpid is is %d\n", fg_stat_ptr);
+           // fprintf(stderr, "fg_stat after waitpid is is %d\n", fg_stat_ptr);
 
             if (stat_temp == -1)
             {
@@ -335,7 +335,7 @@ void handle_system_cmd_piped(struct cmd_var *ptr)
             signal(SIGTTIN, SIG_DFL);
             //exit(0);
 
-            fprintf(stderr, "Wait over\n");
+           // fprintf(stderr, "Wait over\n");
             curr_fg_pid = -1;
 
             /* WIFSTOPPED(wstatus)
@@ -350,15 +350,15 @@ void handle_system_cmd_piped(struct cmd_var *ptr)
             }
             else if (WIFEXITED(fg_stat_ptr))
             {
-                fprintf(stderr, "Process was exited\n");
+                //fprintf(stderr, "Process was exited\n");
                 if (WEXITSTATUS(fg_stat_ptr) == EXIT_SUCCESS)
                 {
                     //legendary is 1
-                    fprintf(stderr, "Exit was successful\n");
+                  //  fprintf(stderr, "Exit was successful\n");
                 }
                 else
                 {
-                    fprintf(stderr, "foreground process exited abnormally->legendary=0\n");
+                    fprintf(stderr, "foreground process exited abnormally\n");
                     is_legendary = 0;
                 }
             }

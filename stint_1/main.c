@@ -192,7 +192,7 @@ int main()
             add_new_cmd(cmd_input);
             send_for_execution(cmd_input);
         }
-        part3;
+        //part3;
     }
 
     return 0;

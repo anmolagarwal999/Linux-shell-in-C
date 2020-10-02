@@ -1,20 +1,20 @@
-emacs testing.cpp &
-sleep 30 &
+yes 67
 jobs
-fg 3
-vim testing.cpp &
-vim testing2.cpp &
+ps
+exit
+yes 74
+yes 74 &
+yes 76
+sleep 100
 jobs
-fg 4
+bg 2
 jobs
-bg 5
-grep --include=\*.{c,h} -rnw './' -e "WEIRD SHIT IS HAPPENING"
-vim testing.cpp &
+sleep 90 &
+obs
 jobs
-bg 1
-quit
-ls -l /bin
-ls -l /bin | grep bash
-yes hello
-yes stark
-yes iwwow
+overkill
+jobs
+history | echo
+cd ..
+ls @ echo successful $ echo fail
+./b

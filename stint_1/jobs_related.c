@@ -42,7 +42,7 @@ void add_job(int child_pid, struct cmd_var *ptr, int curr_cmd_stat)
     jobs_ptr[num_jobs_cmd]->cmd_stat = curr_cmd_stat; //process is running if 1, stopped if 0
     jobs_ptr[num_jobs_cmd]->is_relevant = 1;          //process not yet terminated
 
-    fprintf(stderr, "curr job id is %d\n", curr_job_id);
+    //fprintf(stderr, "curr job id is %d\n", curr_job_id);
     jobs_ptr[num_jobs_cmd]->jid = curr_job_id++;
     for (int i = 0; i < ptr->arg_num; i++)
     {
@@ -70,9 +70,9 @@ void exec_jobs_cmd()
 
     for (i = 0; i < n; i++)
     {
-        debug(i);
-        fprintf(stderr, "%s\n", jobs_ptr[i]->cmd_name);
-        fprintf(stderr, "%d\n", jobs_ptr[i]->is_relevant);
+        //debug(i);
+        // fprintf(stderr, "%s\n", jobs_ptr[i]->cmd_name);
+        //fprintf(stderr, "%d\n", jobs_ptr[i]->is_relevant);
         if (jobs_ptr[i]->is_relevant != 0)
         {
             int curr_stat = get_pid_status(jobs_ptr[i]->pid);
@@ -93,10 +93,11 @@ void exec_jobs_cmd()
                     printf("STOPPED ");
                 }
 
-                printf(" %s [pid: %d]", jobs_ptr[i]->cmd_name, jobs_ptr[i]->pid);
+                printf(" %s [pid: %d]\n", jobs_ptr[i]->cmd_name, jobs_ptr[i]->pid);
             }
         }
     }
+    fflush(stdout);
 }
 
 void exec_fg(struct cmd_var *ptr)
@@ -114,6 +115,7 @@ void exec_fg(struct cmd_var *ptr)
     {
         is_legendary = 0;
         fprintf(stderr, "Invalid number of args for fg\n");
+        fflush(stderr);
         return;
     }
 
@@ -123,6 +125,8 @@ void exec_fg(struct cmd_var *ptr)
     {
         is_legendary = 0;
         fprintf(stderr, "Invalid job id\n");
+        fflush(stderr);
+
         return;
     }
 
@@ -131,6 +135,8 @@ void exec_fg(struct cmd_var *ptr)
     {
         is_legendary = 0;
         fprintf(stderr, "ERROR: Job with this job id is neither currently running nor stopped\n");
+        fflush(stderr);
+
         return;
     }
 
@@ -144,6 +150,8 @@ void exec_fg(struct cmd_var *ptr)
     {
         is_legendary = 0;
         fprintf(stderr, "ERROR: Process does not seem to exist\n");
+        fflush(stderr);
+
         return;
     }
 
@@ -230,11 +238,12 @@ this signal is ignored by default.
         int i = job_idx;
         jobs_ptr[i]->cmd_stat = 2;
         fprintf(stderr, "%s with pid [%d] and jid [%d] -> STOPPED with signal number %d\n", jobs_ptr[i]->cmd_name, jobs_ptr[i]->pid, jobs_ptr[i]->jid, stopping_signal_number);
+        fflush(stderr);
     }
     else if (WIFEXITED(fg_stat))
     {
         //did the process exit normally? (as opposed to being signalled).
-        fprintf(stderr, "In exit if\n");
+       // fprintf(stderr, "In exit if\n");
         jobs_ptr[job_idx]->is_relevant = 0;
 
         if (WEXITSTATUS(fg_stat) == EXIT_SUCCESS)
@@ -276,6 +285,8 @@ void exec_bg(struct cmd_var *ptr)
         is_legendary = 0;
 
         fprintf(stderr, "Invalid number of args for bg\n");
+        fflush(stderr);
+
         return;
     }
 
@@ -286,6 +297,8 @@ void exec_bg(struct cmd_var *ptr)
         is_legendary = 0;
 
         fprintf(stderr, "Invalid job id\n");
+        fflush(stderr);
+
         return;
     }
 
@@ -295,6 +308,8 @@ void exec_bg(struct cmd_var *ptr)
         is_legendary = 0;
 
         fprintf(stderr, "Job with this job id is neither running nor stopped\n");
+        fflush(stderr);
+
         return;
     }
 
@@ -306,6 +321,8 @@ void exec_bg(struct cmd_var *ptr)
         is_legendary = 0;
 
         fprintf(stderr, "ERROR: Process does not seem to exist\n");
+        fflush(stderr);
+
         return;
     }
 
@@ -356,6 +373,7 @@ void exec_kjob(struct cmd_var *ptr)
     if (ptr->arg_num != 3)
     {
         fprintf(stderr, "Invalid number of args for kjob\n");
+        fflush(stderr);
         return;
     }
 
@@ -367,6 +385,7 @@ void exec_kjob(struct cmd_var *ptr)
         is_legendary = 0;
 
         fprintf(stderr, "Invalid job id\n");
+        fflush(stderr);
         return;
     }
 
@@ -376,6 +395,7 @@ void exec_kjob(struct cmd_var *ptr)
         is_legendary = 0;
 
         fprintf(stderr, "Invalid job: Job with this job id is neither running nor stopped\n");
+        fflush(stderr);
         return;
     }
 
@@ -386,6 +406,7 @@ void exec_kjob(struct cmd_var *ptr)
         is_legendary = 0;
 
         fprintf(stderr, "ERROR: Process does not seem to exist\n");
+        fflush(stderr);
         return;
     }
 
@@ -395,6 +416,7 @@ void exec_kjob(struct cmd_var *ptr)
         is_legendary = 0;
 
         perror("Error while kjob()");
+        fflush(stderr);
         return;
     }
 }
@@ -408,14 +430,15 @@ void exec_overkill(struct cmd_var *ptr)
     //     int is_bg;
     // };
 
-    fprintf(stderr, "inside overkill\n");
-    fprintf(stderr, "number of args are %d\n", ptr->arg_num);
+    //  fprintf(stderr, "inside overkill\n");
+    // fprintf(stderr, "number of args are %d\n", ptr->arg_num);
 
     if (ptr->arg_num != 1)
     {
         is_legendary = 0;
 
         fprintf(stderr, "Only one token : overkill is expected\n");
+        fflush(stderr);
         return;
     }
 
@@ -451,7 +474,7 @@ short get_pid_status(int query_pid)
 
     if (fd < 0)
     {
-      //  is_legendary = 0;
+        //  is_legendary = 0;
 
         //perror("Error during opening proc/pid/stat");
         return -1;
@@ -464,7 +487,7 @@ short get_pid_status(int query_pid)
 
     if (check_status < 0)
     {
-       // is_legendary = 0;
+        // is_legendary = 0;
         perror("Some error while reading file stat:");
         return -1;
     }

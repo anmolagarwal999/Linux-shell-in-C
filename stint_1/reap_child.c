@@ -5,7 +5,8 @@ void reapChild(int signum)
 {
     int i;
     int stat_loc;
-    fprintf(stderr,"Entered reap Child\n");
+   // fprintf(stderr,"Entered reap Child\n");
+    fflush(stderr);
     if (getpid() != script_pid)
     {
         return;
@@ -15,7 +16,7 @@ void reapChild(int signum)
     {
         //printf("IN LOOP\n");
         pid_t suspected_pid = waitpid(-1, &stat_loc, WNOHANG | WUNTRACED);
-        fprintf(stderr,"Suspected pid is %d\n", suspected_pid);
+        //fprintf(stderr,"Suspected pid is %d\n", suspected_pid);
         if (suspected_pid <= 0)
         {
             /*if WNOHANG was specified and one or more
@@ -31,9 +32,9 @@ void reapChild(int signum)
                 if (jobs_ptr[i]->pid == suspected_pid)
                 {
                     //genuine process
-                  //  printf("found %d at idx %d\n", suspected_pid, i);
-                   // printf("genuine process cmd stat is  %d\n", jobs_ptr[i]->cmd_stat);
-                    if (jobs_ptr[i]->cmd_stat == 1 || jobs_ptr[i]->cmd_stat == 2)
+                    //printf("found %d at idx %d\n", suspected_pid, i);
+                    //printf("genuine process cmd stat is  %d\n", jobs_ptr[i]->cmd_stat);
+                    if (true)
                     {
                         //possible change in behaviour or has exited
 
@@ -46,7 +47,7 @@ void reapChild(int signum)
                         //////////////////////////////////////////////////////////
                         // [<jid>] (<pid>) terminated with exit status <status>
                         //////////////////////////////////////////////////////////////
-                       // printf("Entered initial if condition\n");
+                        //printf("Entered initial if condition\n");
                         if (WIFEXITED(stat_loc))
                         {
                             jobs_ptr[i]->is_relevant = 0;
@@ -102,6 +103,12 @@ void reapChild(int signum)
                                 jobs_ptr[i]->is_relevant = 0;
                                 fprintf(stderr, "%s with pid [%d] and jid [%d] -> TERMINATED with signal number %d\n", jobs_ptr[i]->cmd_name, jobs_ptr[i]->pid, jobs_ptr[i]->jid, terminating_signal_number);
                             }
+                            else
+                            {
+                                //fprintf(stderr,"NOT EVEN THAT\n");
+                                fflush(stderr);
+                            }
+                            
                         }
 
                         break;
@@ -109,6 +116,7 @@ void reapChild(int signum)
                 }
             }
         }
+        fflush(stderr);
 
         signal(SIGCHLD, reapChild);
     }
