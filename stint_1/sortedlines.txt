@@ -7,12 +7,19 @@
 7
 8
 9
-1
-2
-3
-4
-5
-6
-7
-8
-9
+
+        {
+        }
+    {
+    }
+{
+}
+    for(int i=1;i<ptr->arg_num;i++)
+        if(i!=ptr->arg_num-1)
+#include "global_vars.h"
+#include "master_header.h"
+            printf(" ");
+    //printf("ECHO STUFF\n");
+    printf("\n");
+        printf("%s",ptr->cmd_args[i]);
+void exec_echo(struct cmd_var *ptr)

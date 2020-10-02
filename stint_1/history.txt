@@ -1,13 +1,4 @@
 quit
-lol @ ps
-quit
-lol @ ps
-quit
-lol @ ps
-false @ false | ls
-quit
-lol @ ps
-quit
 false @ false $ ls
 cd empty
 ls $ echo penguins
@@ -18,3 +9,12 @@ ls @ echo successful $ echo fail
 cd -
 ps | wc @ ls test | ls
 quit
+echo "The number of lines is:" ; wc -l /etc/passwd
+cut -d : -f 7 /etc/passwd | sort | uniq -c
+cat lines.txt
+sort < lines.txt > sortedlines.txt
+sort < echo.c >> sortedlines.txt
+quit
+ls -l > out | wc
+quit
+find / | wc
