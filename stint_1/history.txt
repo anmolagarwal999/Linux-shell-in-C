@@ -1,20 +1,20 @@
-ls > <
-ls > >>
-sleep 100 &
-./b
+ls .. $ ls ..
+ls ../ $ ls ..
+echo a $ echo b
+sudo apt update && sudo apt upgrade && sudo apt install tree
+true $  echo aaa @  echo bbb
+ls $ echo penguins
+ls @ echo penguins
+ls $ ls ..
+ls kdoe $ ls ..
+true @ echo ahaddd
+ls
+cd ..
+cd -
+cd kflr
+ls @ jiejdie
+ls @ ps
+ls
 exit
-cd ..
-vkrf
 ls
-ps -Q
-quit
-cd kddod | wc
-quit
-q
-quit
-ls
-pinfo 39333
-pinfo
-cd ..
-history
-quit
+./b

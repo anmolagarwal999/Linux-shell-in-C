@@ -9,7 +9,7 @@ char shell_dir_path[1024];
 char history_file_path[1024];
 char *hist_cmds[22];
 
-int script_pid, num_jobs_cmd, curr_history_num, curr_job_id, curr_fg_pid,is_legendary;
+int script_pid, num_jobs_cmd, curr_history_num, curr_job_id, curr_fg_pid, is_legendary;
 
 //maximum number of jobs over the entire session of the shell
 #define jobs_ptr_sz 100
@@ -27,6 +27,8 @@ void sigint_handler()
         yellow_color();
         printf("No foreground process to terminate\n");
         reset_color();
+        fflush(stdout);
+
         part2;
     }
     else
@@ -35,6 +37,8 @@ void sigint_handler()
         red_color();
         printf("Weird stuff is happening\n");
         reset_color();
+        fflush(stdout);
+
         part2;
     }
 }
@@ -50,6 +54,7 @@ void sigtstp_handler()
         yellow_color();
         printf("No foreground process to send_to_background\n");
         reset_color();
+        fflush(stdout);
         part2;
     }
     else
@@ -58,6 +63,8 @@ void sigtstp_handler()
         red_color();
         printf("Weird stuff is happening in sigtstp handler\n");
         reset_color();
+        fflush(stdout);
+
         part2;
     }
 }
@@ -81,7 +88,7 @@ void init_stuff()
     num_jobs_cmd = 0;
     curr_job_id = 1; //this is the lowest available job id usable for assignment
     curr_fg_pid = -1;
-    is_legendary=1;
+    is_legendary = 1;
 
     //init bg struct
     for (int i = 0; i < jobs_ptr_sz; i++)
@@ -114,13 +121,13 @@ void init_stuff()
 
 int main()
 {
-    LL i;
+    //LL i;
 
     init_stuff();
     bool printPrompt = true;
 
-    char *colon_cmds[50];
-    int colon_cmds_idx = 0;
+    // char *colon_cmds[50];
+    //int colon_cmds_idx = 0;
 
     char username_ans[200];
     get_username_linux(username_ans);
@@ -180,30 +187,7 @@ int main()
 
             //adding command to history
             add_new_cmd(cmd_input);
-
-            //https://man7.org/linux/man-pages/man3/strtok.3.html
-            char delims[] = ";";
-            char *token_beg;
-
-            //setting to zero before next command is read to be divided
-            colon_cmds_idx = 0;
-
-            colon_cmds[colon_cmds_idx++] = token_beg = strtok(cmd_input, delims);
-            while (token_beg != NULL)
-            {
-                //printf("Token inside loop is %s\n", token_beg);
-                colon_cmds[colon_cmds_idx++] = token_beg = strtok(NULL, delims);
-            }
-
-            //looping through the individual commands which have been seperated by colons
-            for (i = 0; i < colon_cmds_idx; i++)
-            {
-                if (colon_cmds[i] != NULL)
-                {
-                    //func in divide_input.c
-                    execute_command_after_format(colon_cmds[i]);
-                }
-            }
+            deal_with_ops(cmd_input);
         }
         part3;
     }

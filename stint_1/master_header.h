@@ -34,5 +34,7 @@ typedef long long LL;
 #define part fprintf(stderr,"-----------------------------------------\n");
 #define part2 fprintf(stderr,"====================================================\n");
 #define part3 fprintf(stderr,"############################################################\n");
+#define debug(x) printf("\n\"%s\" is: %d\n",#x,x);
+
 
 #endif
