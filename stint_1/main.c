@@ -9,7 +9,7 @@ char shell_dir_path[1024];
 char history_file_path[1024];
 char *hist_cmds[22];
 
-int script_pid, num_jobs_cmd, curr_history_num, curr_job_id, curr_fg_pid;
+int script_pid, num_jobs_cmd, curr_history_num, curr_job_id, curr_fg_pid,is_legendary;
 
 //maximum number of jobs over the entire session of the shell
 #define jobs_ptr_sz 100
@@ -81,6 +81,7 @@ void init_stuff()
     num_jobs_cmd = 0;
     curr_job_id = 1; //this is the lowest available job id usable for assignment
     curr_fg_pid = -1;
+    is_legendary=1;
 
     //init bg struct
     for (int i = 0; i < jobs_ptr_sz; i++)

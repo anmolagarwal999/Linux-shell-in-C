@@ -8,6 +8,8 @@ void exec_set_env_var(struct cmd_var *ptr)
     int tot_args = ptr->arg_num;
     if (tot_args - 1 == 0 || tot_args - 1 > 2)
     {
+        is_legendary = 0;
+
         fprintf(stderr, "ERROR in cmd: Invalid number of args provided for SETENV\n");
         return;
     }
@@ -31,6 +33,8 @@ void exec_set_env_var(struct cmd_var *ptr)
 
     if (func_stat != 0)
     {
+        is_legendary = 0;
+
         perror("Error during SETENV");
     }
 
@@ -48,6 +52,8 @@ void exec_unset_env_var(struct cmd_var *ptr)
     int tot_args = ptr->arg_num;
     if (tot_args - 1 != 1)
     {
+        is_legendary = 0;
+
         fprintf(stderr, "ERROR in cmd: Invalid number of args provided for UNSETENV\n");
         return;
     }
@@ -66,6 +72,8 @@ void exec_unset_env_var(struct cmd_var *ptr)
 
     if (func_stat != 0)
     {
+        is_legendary = 0;
+
         perror("Error during UNSETENV");
     }
 

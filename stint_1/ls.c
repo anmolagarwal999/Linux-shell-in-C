@@ -31,6 +31,8 @@ void display_obj_info(char *file_path, char *parent_path)
 
     if (stat(use_path, &fileStat) < 0)
     {
+        is_legendary = 0;
+
         perror("some error occurred while using stat %s\n");
         return;
     }
@@ -56,6 +58,8 @@ void display_obj_info(char *file_path, char *parent_path)
 
     if (pwd == NULL)
     {
+        is_legendary = 0;
+
         perror("\nError while retrieving owner_name of file");
     }
     else
@@ -67,6 +71,8 @@ void display_obj_info(char *file_path, char *parent_path)
 
     if (grp == NULL)
     {
+        is_legendary = 0;
+
         perror("\nError while retrieving group_name of file");
     }
     else
@@ -133,6 +139,8 @@ LL get_total_var(char *file_path, char *parent_path)
 
     if (stat(use_path, &fileStat) < 0)
     {
+        is_legendary = 0;
+
         perror("some error occurred while using stat %s\n");
         return -1;
     }
@@ -174,6 +182,8 @@ void process_dir(char *dir_path, int num_dir_args, bool l_flag, bool a_flag)
         dp = opendir(dir_path);
         if (dp == NULL)
         {
+            is_legendary = 0;
+
             perror("ls cannot access this file or directory while using opendir");
             //return -1;
             return;
@@ -231,7 +241,7 @@ void exec_ls(struct cmd_var *cmd)
     bool l_flag = false;
     bool a_flag = false;
 
-   // printf("IT IS LS TIME\n");
+    // printf("IT IS LS TIME\n");
 
     LL num_tokens = cmd->arg_num;
     int i, j;
@@ -264,7 +274,7 @@ void exec_ls(struct cmd_var *cmd)
             num_dir_args++;
         }
     }
-   // printf("num of dir_args is %lld\n", num_dir_args);
+    // printf("num of dir_args is %lld\n", num_dir_args);
     if (num_dir_args == 0)
     {
         num_dir_args = 1;
@@ -278,14 +288,14 @@ void exec_ls(struct cmd_var *cmd)
             if (cmd->cmd_args[i][0] != '-')
             {
                 //not a flag definitely
-               // printf("\nDir being considered is %s\n", cmd->cmd_args[i]);
+                // printf("\nDir being considered is %s\n", cmd->cmd_args[i]);
 
                 if (cmd->cmd_args[i][0] == '~')
                 {
                     convert_mod_to_abs_path(cmd->cmd_args[i]);
                 }
-                char *send_dir=(char *)malloc(len_token+1);
-                strcpy(send_dir,cmd->cmd_args[i]);
+                char *send_dir = (char *)malloc(len_token + 1);
+                strcpy(send_dir, cmd->cmd_args[i]);
                 //printf("\nDir being considered is %s\n", send_dir);
                 process_dir(send_dir, num_dir_args, l_flag, a_flag);
                 if (num_dir_args > 1)

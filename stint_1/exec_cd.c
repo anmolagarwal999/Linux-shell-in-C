@@ -25,6 +25,7 @@ void exec_cd_cmd(char *cd_input)
     //printf("status for chdir is %d\n",status_cmd);
     if (status_cmd < 0)
     {
+        is_legendary=0;
         perror("chdir error");
         //part3;
     }

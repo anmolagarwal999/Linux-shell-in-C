@@ -13,6 +13,8 @@ void get_pwd_path(char *dir_path)
     }
     else
     {
+                is_legendary=0;
+
         perror("Error in getcwd");
     }
 }
@@ -28,6 +30,8 @@ void get_pwd_path_no_print(char *dir_path)
     }
     else
     {
+                is_legendary=0;
+
         perror("Error in getcwd");
     }
 }

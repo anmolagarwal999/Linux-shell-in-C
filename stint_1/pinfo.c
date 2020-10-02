@@ -43,6 +43,7 @@ void exec_pinfo(struct cmd_var *ptr)
     else if (ENOENT == errno)
     {
         /* Directory does not exist. */
+        is_legendary = 0;
         perror("opendir for proc/pid failed ");
         printf("Directory corresponding to given pid does not exist\n");
         return;
@@ -50,6 +51,7 @@ void exec_pinfo(struct cmd_var *ptr)
     else
     {
         /* opendir() failed for some other reason. */
+        is_legendary = 0;
         perror("opendir for proc/pid failed ");
         printf("Directory corresponding to given pid failed to open for some reason\n");
         return;
@@ -106,6 +108,8 @@ void exec_pinfo(struct cmd_var *ptr)
     }
     else
     {
+        is_legendary = 0;
+
         printf("Error occurred while getting process status\n");
     }
 
@@ -121,6 +125,8 @@ void exec_pinfo(struct cmd_var *ptr)
     }
     else
     {
+        is_legendary = 0;
+
         printf("Error occurred while getting memory used\n");
     }
 
@@ -150,6 +156,8 @@ short extract_tpgid(char *pid_path, char *tpgid_str, char *buff)
 
     if (fd < 0)
     {
+        is_legendary = 0;
+
         perror("Error during opening proc/pid/stat");
         return -1;
     }
@@ -157,6 +165,8 @@ short extract_tpgid(char *pid_path, char *tpgid_str, char *buff)
     int check_status = read(fd, buff, 600);
     if (check_status < 0)
     {
+        is_legendary = 0;
+
         perror("Some error while reading file stat:");
         return -1;
     }
@@ -192,6 +202,8 @@ short get_status(char *pid_path, char *status_str, char *buff)
 
     if (fd < 0)
     {
+        is_legendary = 0;
+
         perror("Error during opening proc/pid/stat");
         return -1;
     }
@@ -202,6 +214,8 @@ short get_status(char *pid_path, char *status_str, char *buff)
 
     if (check_status < 0)
     {
+        is_legendary = 0;
+
         perror("Some error while reading file stat:");
         return -1;
     }
@@ -238,6 +252,8 @@ short get_memory(char *pid_path, char *mem_str, char *buff)
 
     if (fd < 0)
     {
+        is_legendary = 0;
+
         perror("Error during opening proc/pid/stat");
         return -1;
     }
@@ -245,6 +261,8 @@ short get_memory(char *pid_path, char *mem_str, char *buff)
     int check_status = read(fd, buff, 600);
     if (check_status < 0)
     {
+        is_legendary = 0;
+
         perror("Some error while reading file statm:");
         return -1;
     }
@@ -295,6 +313,8 @@ LL get_executable_path(char *pid_path, char *buff, int now_sz)
         int bytes_read = readlink(pid_path, buff, i);
         if (bytes_read < 0)
         {
+            is_legendary = 0;
+
             perror("readlink error :");
             return -1;
         }
@@ -310,6 +330,8 @@ LL get_executable_path(char *pid_path, char *buff, int now_sz)
             buff = (char *)malloc(sizeof(char) * (i + add_sz));
             if (buff == NULL)
             {
+                is_legendary = 0;
+
                 printf("Failed to malloc sufficient len to store path of executable\n");
                 return -1;
             }

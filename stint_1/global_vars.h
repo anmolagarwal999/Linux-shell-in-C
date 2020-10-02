@@ -20,6 +20,7 @@ extern int num_jobs_cmd;
 extern int curr_job_id;
 extern int curr_history_num;
 extern int curr_fg_pid;
+extern int is_legendary;
 
 #define max_poss_args 100
 struct cmd_var

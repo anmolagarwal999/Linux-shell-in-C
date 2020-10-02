@@ -247,6 +247,7 @@ void handle_system_cmd_piped(struct cmd_var *ptr)
     if (child_pid < 0)
     {
         //printf("ERROR WHILE FORKING\n");
+        is_legendary = 0;
         perror("Error during fork() details");
         //exit(1);
     }
@@ -319,6 +320,7 @@ void handle_system_cmd_piped(struct cmd_var *ptr)
 
             if (stat_temp == -1)
             {
+                is_legendary = 0;
                 perror("Error while wait():");
             }
 
@@ -343,7 +345,21 @@ void handle_system_cmd_piped(struct cmd_var *ptr)
 
             if (WIFSTOPPED(fg_stat_ptr))
             {
+                is_legendary = 0;
                 add_job(child_pid, ptr, 0);
+            }
+            else if (WIFEXITED(fg_stat_ptr))
+            {
+
+                if (WEXITSTATUS(fg_stat_ptr) == EXIT_SUCCESS)
+                {
+                    //legendary is 1
+                }
+                else
+                {
+                    fprintf(stderr,"foreground process exitted abnormally->legendary=0\n");
+                    is_legendary = 0;
+                }
             }
         }
         else

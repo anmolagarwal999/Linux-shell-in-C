@@ -46,7 +46,7 @@ void reapChild(int signum)
                         //////////////////////////////////////////////////////////
                         // [<jid>] (<pid>) terminated with exit status <status>
                         //////////////////////////////////////////////////////////////
-                        printf("Entered initial if condition\n");
+                       // printf("Entered initial if condition\n");
                         if (WIFEXITED(stat_loc))
                         {
                             jobs_ptr[i]->is_relevant = 0;

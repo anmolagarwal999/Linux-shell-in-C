@@ -45,4 +45,5 @@ Both **nightswatch** and **history**   have been implemented.
 - If any of the builtin commands have an ‘&’ as the last token, I am just ignoring the ampersand. Eg: echo ‘abc’ & -> prints ‘abc’
 - Assumed pagesize to 4096 and used that to use the factor 1 page=4Kb
 
-
+NEW ADDITIONS
+- empty commands are successful commands

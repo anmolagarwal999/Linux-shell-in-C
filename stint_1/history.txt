@@ -1,20 +1,20 @@
-pwd
-cd ..
-exit
-cd ..
-exit
-cd ..
-exit
-cd ..
-cd - 
-cd -
-exit
-ls ; ps
-exit
-ls ; echo abc; ps
-exit
 ls > <
 ls > >>
 sleep 100 &
 ./b
 exit
+cd ..
+vkrf
+ls
+ps -Q
+quit
+cd kddod | wc
+quit
+q
+quit
+ls
+pinfo 39333
+pinfo
+cd ..
+history
+quit

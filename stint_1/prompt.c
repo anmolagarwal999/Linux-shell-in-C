@@ -11,10 +11,9 @@ void yellow_color()
     printf("\033[1;33m");
 }
 
-
 void err_yellow_color()
 {
-    fprintf(stderr,"\033[1;33m");
+    fprintf(stderr, "\033[1;33m");
 }
 
 void reset_color()
@@ -24,7 +23,7 @@ void reset_color()
 
 void err_reset_color()
 {
-    fprintf(stderr,"\033[0m");
+    fprintf(stderr, "\033[0m");
 }
 
 void cyan_color()
@@ -32,6 +31,15 @@ void cyan_color()
     printf("\x1b[33m");
 }
 
+void happy_face()
+{
+    printf(":') <");
+}
+
+void sad_face()
+{
+    printf(":'( <");
+}
 
 //////////////////////////////
 void get_username_linux(char *username_str)
@@ -79,10 +87,22 @@ void get_hostname_linux(char *hostname_ans)
     /////////////////////////////////////////////////////////////////
 }
 
-void display_prompt(char *username_ans,char *hostname_ans)
+void display_prompt(char *username_ans, char *hostname_ans)
 {
     /////////////////////////////////////////////////////////////////////
     red_color();
+    if (is_legendary == 1)
+    {
+        happy_face();
+    }
+    else
+    {
+        sad_face();
+    }
+
+    //resetting is_legendary for next command
+    is_legendary = 1;
+
     printf("%s@", username_ans);
     printf("%s:", hostname_ans);
 

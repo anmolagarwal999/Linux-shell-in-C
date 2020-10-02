@@ -7,6 +7,7 @@ void exec_fg(struct cmd_var *ptr);
 void exec_bg(struct cmd_var *ptr);
 void exec_kjob(struct cmd_var *ptr);
 void exec_overkill(struct cmd_var *ptr);
+short get_pid_status(int query_pid);
 
 
 

@@ -8,7 +8,9 @@ void exec_nightswatch(struct cmd_var *ptr)
     // printf("args is %d\n");
     if (ptr->arg_num != 4)
     {
-        printf("Exactly 4 tokens must be given\n");
+        is_legendary = 0;
+
+        fprintf(stderr, "Exactly 4 tokens must be given\n");
         return;
     }
     int choice = 1;
@@ -37,7 +39,9 @@ void exec_nightswatch(struct cmd_var *ptr)
 
     if (interval == -1)
     {
-        printf("Invalid args\n");
+        is_legendary = 0;
+
+        fprintf(stderr, "Invalid args\n");
         return;
     }
 
@@ -68,7 +72,11 @@ void exec_nightswatch(struct cmd_var *ptr)
         retval = select(1, &rfds, NULL, NULL, &tv);
 
         if (retval == -1)
+        {
+            is_legendary = 0;
+
             perror("select()");
+        }
         else if (retval > 0)
         {
             //printf("Data is available now %d.\n", retval);
@@ -114,6 +122,8 @@ void display_cpu_stuff(int done_already)
 
     if (fd < 0)
     {
+        is_legendary = 0;
+
         perror("Error during opening proc/interrupts");
         return;
     }
@@ -121,6 +131,8 @@ void display_cpu_stuff(int done_already)
     int check_status = read(fd, buff, 500);
     if (check_status < 0)
     {
+        is_legendary = 0;
+
         perror("Some error while reading file stat:");
         return;
     }
@@ -187,6 +199,8 @@ LL get_recent_pid()
 
     if (fd < 0)
     {
+        is_legendary = 0;
+
         perror("Error during opening proc/loadavg");
         return -1;
     }
@@ -194,6 +208,8 @@ LL get_recent_pid()
     int check_status = read(fd, buff, 100);
     if (check_status < 0)
     {
+        is_legendary = 0;
+
         perror("Some error while reading file loadavg:");
         return -1;
     }
