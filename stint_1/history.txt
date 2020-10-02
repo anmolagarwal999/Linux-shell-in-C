@@ -1,20 +1,20 @@
-yes 67
-jobs
-ps
-exit
-yes 74
-yes 74 &
-yes 76
-sleep 100
-jobs
-bg 2
-jobs
-sleep 90 &
-obs
-jobs
-overkill
-jobs
-history | echo
-cd ..
-ls @ echo successful $ echo fail
-./b
+ls -l > wc
+ls -l | wls -l | wc
+ls -l   | wc
+ls -l | wc
+ls -l
+ls -l > out | wc
+cut -d : -f 7 /etc/passwd | head
+cut -d : -f 7 /etc/passwd | sort | uniq -c
+ cut -d : -f 7 /etc/passwd | sort | uniq -c | sort -nr | head -n 4
+ head /etc/passwd | tail -n 5
+ls -s | sort -nr | head -n 5
+echo hi | head /etc/passwd
+sort main.c
+sort history | cat history.txt
+echo hi | ls
+cat main.c ls.c combine
+> out
+cat < echo.c | cat nightswatch.c
+cd not_dir | wc
+quit

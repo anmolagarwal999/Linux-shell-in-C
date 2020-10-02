@@ -1,4 +1,4 @@
-# Assignment 2
+# Assignment 3
 #### - 2019101068
 
 ### Instructions to run
@@ -7,6 +7,8 @@ $ make
 $ ./a
 ```
 Both **nightswatch** and **history**   have been implemented.
+
+#### All the 3 bonuses ie **EXIT codes**, **cd -** and **COMAND CHAINING** have been implemented.
 
 ***Typing 'exit' followed by ENTER*** will exit from the shell.
 
@@ -20,11 +22,14 @@ Both **nightswatch** and **history**   have been implemented.
 * `ls.c`-> implements ls command (basic usage+ functionality of flags of 'a' and 'l')
 * `pinfo.c`-> functions to implement pinfo command
 * `reap_child.c`-> deals with child of the parent only if it is 
-* `divide_input.c` -> calls the exec_cmd function after accepting atomic commands
+* `divide_input.c` -> calls the exec_cmd function after accepting atomic commands, handles command chaining and semi-colon
 * `prompt.c` -> prints the prompt
 * `nightswatch.c` -> implements nightswatch command
 * `global_vars.h` -> contains definitions of structs etc.
 * `master_header.h` -> contains all header files at one place
+* `env.c` -> implements SETENV and UNSETENV command
+* `piping_exec.c` -> implements piping and redirection and contains main code for foreground processes and background processes
+* `jobs_related.c` -> implements fg,bg,kjob,overkill etc and deals with keeping track of pending background jobs
 
 
 ### Assumptions and other details
@@ -45,5 +50,8 @@ Both **nightswatch** and **history**   have been implemented.
 - If any of the builtin commands have an ‘&’ as the last token, I am just ignoring the ampersand. Eg: echo ‘abc’ & -> prints ‘abc’
 - Assumed pagesize to 4096 and used that to use the factor 1 page=4Kb
 
-NEW ADDITIONS
+### NEW ADDITIONS in assumptions
 - empty commands are successful commands
+- The piped commands are not being executed in a subshell and so a command like `cd .. | ls` prints contents of the "../" directory
+- Multiple redirection commands where append and write exist together won't be tested
+- The piping and redirection operators have space before and after them

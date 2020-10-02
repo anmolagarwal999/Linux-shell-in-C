@@ -27,7 +27,7 @@ void exec_set_env_var(struct cmd_var *ptr)
     //    int setenv(const char *name, const char *value, int overwrite);
 
     // char *old_val = getenv(name_var);
-     printf("new val is %s\n",val_var);
+   //  printf("new val is %s\n",val_var);
 
     int func_stat = setenv(name_var, val_var, 1);
 

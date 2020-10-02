@@ -45,7 +45,7 @@ void rewrite_history()
 
         if (bytes_written != len_cmd)
         {
-            printf("\nError while writing to the history file\n");
+            fprintf(stderr,"\nError while writing to the history file\n");
             //perror("Error details");
             return;
         }

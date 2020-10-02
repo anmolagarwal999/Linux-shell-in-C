@@ -358,7 +358,7 @@ void handle_system_cmd_piped(struct cmd_var *ptr)
                 }
                 else
                 {
-                    fprintf(stderr, "foreground process exited abnormally\n");
+                    //fprintf(stderr, "foreground process exited abnormally->legendary=0\n");
                     is_legendary = 0;
                 }
             }

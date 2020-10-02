@@ -45,7 +45,7 @@ void exec_pinfo(struct cmd_var *ptr)
         /* Directory does not exist. */
         is_legendary = 0;
         perror("opendir for proc/pid failed ");
-        printf("Directory corresponding to given pid does not exist\n");
+        fprintf(stderr,"Directory corresponding to given pid does not exist\n");
         return;
     }
     else
@@ -53,7 +53,7 @@ void exec_pinfo(struct cmd_var *ptr)
         /* opendir() failed for some other reason. */
         is_legendary = 0;
         perror("opendir for proc/pid failed ");
-        printf("Directory corresponding to given pid failed to open for some reason\n");
+        fprintf(stderr,"Directory corresponding to given pid failed to open for some reason\n");
         return;
     }
 
@@ -110,7 +110,7 @@ void exec_pinfo(struct cmd_var *ptr)
     {
         is_legendary = 0;
 
-        printf("Error occurred while getting process status\n");
+        fprintf(stderr,"Error occurred while getting process status\n");
     }
 
     if (stat2 != -1)
@@ -127,7 +127,7 @@ void exec_pinfo(struct cmd_var *ptr)
     {
         is_legendary = 0;
 
-        printf("Error occurred while getting memory used\n");
+        fprintf(stderr,"Error occurred while getting memory used\n");
     }
 
     if (stat3 != -1)
@@ -136,7 +136,8 @@ void exec_pinfo(struct cmd_var *ptr)
     }
     else
     {
-        printf("Error getting executable path\n");
+        is_legendary=0;
+        fprintf(stderr,"Error getting executable path\n");
     }
 
     if (buff != NULL)
@@ -332,7 +333,7 @@ LL get_executable_path(char *pid_path, char *buff, int now_sz)
             {
                 is_legendary = 0;
 
-                printf("Failed to malloc sufficient len to store path of executable\n");
+                fprintf(stderr,"Failed to malloc sufficient len to store path of executable\n");
                 return -1;
             }
         }
