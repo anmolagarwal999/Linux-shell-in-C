@@ -1,20 +1,20 @@
-ls -l > wc
-ls -l | wls -l | wc
-ls -l   | wc
-ls -l | wc
-ls -l
-ls -l > out | wc
-cut -d : -f 7 /etc/passwd | head
-cut -d : -f 7 /etc/passwd | sort | uniq -c
- cut -d : -f 7 /etc/passwd | sort | uniq -c | sort -nr | head -n 4
- head /etc/passwd | tail -n 5
-ls -s | sort -nr | head -n 5
-echo hi | head /etc/passwd
-sort main.c
-sort history | cat history.txt
-echo hi | ls
-cat main.c ls.c combine
-> out
-cat < echo.c | cat nightswatch.c
-cd not_dir | wc
+quit
+lol @ ps
+quit
+lol @ ps
+quit
+lol @ ps
+false @ false | ls
+quit
+lol @ ps
+quit
+false @ false $ ls
+cd empty
+ls $ echo penguins
+ls @ echo penguins
+ps -Q $ ps -Q $ ls @ echo penguins $ ls
+ps -Q $ ps -Q
+ls @ echo successful $ echo fail
+cd -
+ps | wc @ ls test | ls
 quit

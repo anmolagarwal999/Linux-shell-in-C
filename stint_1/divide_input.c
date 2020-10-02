@@ -27,23 +27,38 @@ void deal_with_ops(char *cmd_input)
             is_legendary = 1;
 
             ////////////////
+            //fprintf(stderr, "1 sending %s\n", cmd_to_send);
             execute_command_after_format(cmd_to_send);
             /////////////////////
 
             if (is_legendary == 1)
             {
                 //Don't do anything
+                lb = i + 1;
+                ub = lb;
+                i++;
             }
             else
             {
                 //false && echo aaa && echo bbb
-                //No hope
-                break;
-            }
+                //Don't do anything till next OR is encountered
+                int t;
+                for (t = i + 1; t < len_cmd_input; t++)
+                {
+                    if (cmd_input[t] == '$')
+                    {
+                        break;
+                    }
+                }
 
-            lb = i + 1;
-            ub = lb;
-            i++;
+                lb = t + 1;
+                if (lb > len_cmd_input)
+                {
+                    lb = len_cmd_input;
+                }
+                ub = lb;
+                i = lb;
+            }
         }
         else if (cmd_input[i] == '$')
         {
@@ -59,6 +74,8 @@ void deal_with_ops(char *cmd_input)
             is_legendary = 1;
 
             ////////////////
+            //fprintf(stderr, "2 sending %s\n", cmd_to_send);
+
             execute_command_after_format(cmd_to_send);
             /////////////////////
 
@@ -98,7 +115,7 @@ void deal_with_ops(char *cmd_input)
             i++;
         }
     }
-
+    //debug(lb);
     if (lb != len_cmd_input)
     {
         int pos_now = 0;
@@ -112,6 +129,7 @@ void deal_with_ops(char *cmd_input)
         is_legendary = 1;
 
         ////////////////
+       // fprintf(stderr, "3 sending %s\n", cmd_to_send);
         execute_command_after_format(cmd_to_send);
     }
 
@@ -143,7 +161,7 @@ void send_for_execution(char *cmd_input)
 
     //looping through the individual commands which have been seperated by colons
     char *tmp_str = (char *)malloc(sizeof(char) * 200);
-    is_legendary=1;
+    is_legendary = 1;
     for (int i = 0; i < colon_cmds_idx; i++)
     {
         if (colon_cmds[i] != NULL)
@@ -182,6 +200,8 @@ void execute_command_after_format(char *cmd_input)
      corrupted and may overwrite on other upcoming function's address space*/
     char *input_to_master = (char *)malloc(sizeof(char) * (cmd_buffer_sz));
     strcpy(input_to_master, cmd_input);
+
+    //fprintf(stderr, "Trying to execute %s\n", input_to_master);
 
     populate_cmd_master(input_to_master);
     free(input_to_master);

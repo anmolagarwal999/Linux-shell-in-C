@@ -60,7 +60,7 @@ void reapChild(int signum)
                             }
                             else
                             {
-                                fprintf(stderr, "%s with pid [%d] and jid [%d] exited ABNORMALLY with status as %d\n", jobs_ptr[i]->cmd_name, jobs_ptr[i]->pid, jobs_ptr[i]->pid, WEXITSTATUS(stat_loc));
+                                fprintf(stderr, "%s with pid [%d] and jid [%d] exited ABNORMALLY with status as %d\n", jobs_ptr[i]->cmd_name, jobs_ptr[i]->pid, jobs_ptr[i]->jid, WEXITSTATUS(stat_loc));
                             }
                         }
                         else
@@ -80,9 +80,9 @@ void reapChild(int signum)
                             {
                                 //Also, we need to change status of job to stopped
 
-                                int stopping_signal_number = WSTOPSIG(stat_loc);
+                                //int stopping_signal_number = WSTOPSIG(stat_loc);
                                 jobs_ptr[i]->cmd_stat = 2;
-                                fprintf(stderr, "%s with pid [%d] and jid [%d] -> STOPPED with signal number %d\n", jobs_ptr[i]->cmd_name, jobs_ptr[i]->pid, jobs_ptr[i]->jid, stopping_signal_number);
+                                //fprintf(stderr, "%s with pid [%d] and jid [%d] -> STOPPED with signal number %d\n", jobs_ptr[i]->cmd_name, jobs_ptr[i]->pid, jobs_ptr[i]->jid, stopping_signal_number);
                             }
 
                             /* WIFSIGNALED(stat_val)
@@ -99,9 +99,9 @@ void reapChild(int signum)
                             {
                                 //Also, we need to change status of job to stopped
 
-                                int terminating_signal_number = WTERMSIG(stat_loc);
+                              //  int terminating_signal_number = WTERMSIG(stat_loc);
                                 jobs_ptr[i]->is_relevant = 0;
-                                fprintf(stderr, "%s with pid [%d] and jid [%d] -> TERMINATED with signal number %d\n", jobs_ptr[i]->cmd_name, jobs_ptr[i]->pid, jobs_ptr[i]->jid, terminating_signal_number);
+                                //fprintf(stderr, "%s with pid [%d] and jid [%d] -> TERMINATED with signal number %d\n", jobs_ptr[i]->cmd_name, jobs_ptr[i]->pid, jobs_ptr[i]->jid, terminating_signal_number);
                             }
                             else
                             {

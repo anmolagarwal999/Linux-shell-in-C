@@ -275,7 +275,7 @@ void handle_system_cmd_piped(struct cmd_var *ptr)
         int success_stat = execvp(ptr->cmd_args[0], ptr->cmd_args);
         if (success_stat < 0)
         {
-            //printf("ERROR while executing the input command\n");
+            //fprintf(stderr,"ERROR while executing the input command\n");
             perror("Error details after execvp");
             // part;
             // exit(0);
