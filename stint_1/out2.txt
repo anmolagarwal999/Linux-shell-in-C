@@ -1,9 +1,1 @@
-exited transition
-shift done
-Dealt with fds
-trying to shift
-failure to shift
-args supplied after removal of redirection tokens is 
-diff
-d1.txt
-d2.txt
+198

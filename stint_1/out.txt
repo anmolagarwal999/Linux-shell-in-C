@@ -1,20 +1,34 @@
-Dealt with fds
-trying to shift
-tot is 4
-i is 0
-i is 1
-i is 2
-curr_idx is 2
-failure to shift
-args supplied after removal of redirection tokens is 2
-grep
+piping_exec.h
+exec_cd.c
+piping_exec.c
+ls.c
+exp3.c
 echo.c
------------------------------------------
-id cmd is 0
-Time to invoke system command
-entered the forking function
-in parent
-going to wait
-echo.c
-wait over
-RETURNED SAFELY
+exec_cd.o
+piping_exec.o
+exp2.c
+path_related.c
+get_history.c
+main.c
+echo.h
+execution.h
+exec_cd.h
+execution.o
+reap_child.c
+exp1.c
+reap_child.o
+pinfo.c
+wc_output.txt
+dp_prob.cpp
+nightswatch.c
+jobs_related.c
+T.cpp
+env.c
+nightswatch.o
+reap_child.h
+divide_input.c
+nightswatch.h
+execution.c
+testing.cpp
+echo.o
+prompt.c

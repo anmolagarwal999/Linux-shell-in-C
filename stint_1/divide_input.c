@@ -5,7 +5,7 @@ typedef long long LL;
 void deal_with_ops(char *cmd_input)
 {
 
-// The return status of AND and OR lists is the exit status of the last command executed in the list.
+    // The return status of AND and OR lists is the exit status of the last command executed in the list.
     int i = 0;
     int len_cmd_input = strlen(cmd_input);
     char lb = 0, ub = 0;
@@ -27,7 +27,7 @@ void deal_with_ops(char *cmd_input)
             is_legendary = 1;
 
             ////////////////
-            send_for_execution(cmd_to_send);
+            execute_command_after_format(cmd_to_send);
             /////////////////////
 
             if (is_legendary == 1)
@@ -47,7 +47,7 @@ void deal_with_ops(char *cmd_input)
         }
         else if (cmd_input[i] == '$')
         {
-          //  printf("\nOR\n");
+            //  printf("\nOR\n");
 
             int pos_now = 0;
 
@@ -59,7 +59,7 @@ void deal_with_ops(char *cmd_input)
             is_legendary = 1;
 
             ////////////////
-            send_for_execution(cmd_to_send);
+            execute_command_after_format(cmd_to_send);
             /////////////////////
 
             if (is_legendary == 1)
@@ -74,10 +74,10 @@ void deal_with_ops(char *cmd_input)
                     }
                 }
 
-                lb = t+1;
-                if(lb>len_cmd_input)
+                lb = t + 1;
+                if (lb > len_cmd_input)
                 {
-                    lb=len_cmd_input;
+                    lb = len_cmd_input;
                 }
                 ub = lb;
                 i = lb;
@@ -93,7 +93,7 @@ void deal_with_ops(char *cmd_input)
         }
         else
         {
-           // printf("%c", cmd_input[i]);
+            // printf("%c", cmd_input[i]);
             ub = i;
             i++;
         }
@@ -102,7 +102,7 @@ void deal_with_ops(char *cmd_input)
     if (lb != len_cmd_input)
     {
         int pos_now = 0;
-       // debug(lb);
+        // debug(lb);
 
         for (int j = lb; j <= ub; j++)
         {
@@ -112,10 +112,10 @@ void deal_with_ops(char *cmd_input)
         is_legendary = 1;
 
         ////////////////
-        send_for_execution(cmd_to_send);
+        execute_command_after_format(cmd_to_send);
     }
 
-   // printf("\n");
+    // printf("\n");
 
     fflush(stdout);
     free(cmd_to_send);
@@ -125,7 +125,7 @@ void send_for_execution(char *cmd_input)
 {
     //https://man7.org/linux/man-pages/man3/strtok.3.html
 
-   // printf("Attempting to execute %s\n", cmd_input);
+    // printf("Attempting to execute %s\n", cmd_input);
     //return;
     char delims[] = ";";
     char *token_beg;
@@ -142,12 +142,15 @@ void send_for_execution(char *cmd_input)
     }
 
     //looping through the individual commands which have been seperated by colons
+    char *tmp_str = (char *)malloc(sizeof(char) * 200);
+    is_legendary=1;
     for (int i = 0; i < colon_cmds_idx; i++)
     {
         if (colon_cmds[i] != NULL)
         {
             //func in divide_input.c
-            execute_command_after_format(colon_cmds[i]);
+            strcpy(tmp_str, colon_cmds[i]);
+            deal_with_ops(tmp_str);
         }
     }
     part2;
@@ -160,7 +163,7 @@ void execute_command_after_format(char *cmd_input)
 {
 
     int len_cmd = strlen(cmd_input);
-  //  printf("input for execute command after format is %s with len %d\n", cmd_input, len_cmd);
+    //  printf("input for execute command after format is %s with len %d\n", cmd_input, len_cmd);
 
     if (cmd_input[len_cmd - 1] == '\n')
     {

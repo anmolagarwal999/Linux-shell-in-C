@@ -8,6 +8,8 @@ char prev_dir_path[1024];
 char shell_dir_path[1024];
 char history_file_path[1024];
 char *hist_cmds[22];
+char username_ans[200];
+char hostname_ans[500];
 
 int script_pid, num_jobs_cmd, curr_history_num, curr_job_id, curr_fg_pid, is_legendary;
 
@@ -17,19 +19,20 @@ struct jobs_cmd *jobs_ptr[jobs_ptr_sz];
 
 void sigint_handler()
 {
-   // printf("inside SIGINT HANDLER\n");
-  //  printf("pid of invoking process is %d\n", getpid());
-   // printf("script_pid is %d\n", script_pid);
+    // printf("inside SIGINT HANDLER\n");
+    //  printf("pid of invoking process is %d\n", getpid());
+    // printf("script_pid is %d\n", script_pid);
     if (getpid() == script_pid)
     {
-        part2;
+        // part2;
         // printf("Weird stuff is happening\n");
         yellow_color();
-        printf("No foreground process to terminate\n");
+        printf("\nNo foreground process to terminate\n");
         reset_color();
+        display_prompt(username_ans, hostname_ans);
         fflush(stdout);
 
-        part2;
+        // part2;
     }
     else
     {
@@ -50,12 +53,14 @@ void sigtstp_handler()
     // printf("script_pid is %d\n", script_pid);
     if (getpid() == script_pid)
     {
-        part2;
+        //part2;
         yellow_color();
-        printf("No foreground process to send_to_background\n");
+        printf("\nNo foreground process available to send_to_background\n");
         reset_color();
+        display_prompt(username_ans, hostname_ans);
         fflush(stdout);
-        part2;
+
+        // part2;
     }
     else
     {
@@ -129,9 +134,7 @@ int main()
     // char *colon_cmds[50];
     //int colon_cmds_idx = 0;
 
-    char username_ans[200];
     get_username_linux(username_ans);
-    char hostname_ans[500];
     get_hostname_linux(hostname_ans);
 
     unsigned long cmd_buffer_sz = 200;
@@ -159,7 +162,7 @@ int main()
 
         //&cmd_input needed as in case the buffer gets changed to a different loc, we need it to get updated there
         chars_read = getline(&cmd_input, &cmd_buffer_sz, stdin);
-       // printf("pid of process invoking terminal is %d\n", getpid());
+        // printf("pid of process invoking terminal is %d\n", getpid());
         if (chars_read == -1)
         {
 
@@ -187,7 +190,7 @@ int main()
 
             //adding command to history
             add_new_cmd(cmd_input);
-            deal_with_ops(cmd_input);
+            send_for_execution(cmd_input);
         }
         part3;
     }

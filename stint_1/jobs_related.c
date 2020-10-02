@@ -227,6 +227,8 @@ this signal is ignored by default.
     }
     else if (WIFEXITED(fg_stat))
     {
+        //did the process exit normally? (as opposed to being signalled).
+        fprintf(stderr,"In exit if\n");
         jobs_ptr[job_idx]->is_relevant = 0;
 
         if (WEXITSTATUS(fg_stat) == EXIT_SUCCESS)
@@ -239,6 +241,11 @@ this signal is ignored by default.
             is_legendary = 0;
         }
     }
+    else
+    {
+        is_legendary=0;
+    }
+    
 
     /////////////////////////////////////////////////////////////////////////////////////
 }

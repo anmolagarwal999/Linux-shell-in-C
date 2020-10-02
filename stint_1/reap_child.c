@@ -5,7 +5,7 @@ void reapChild(int signum)
 {
     int i;
     int stat_loc;
-    printf("Entered reap Child\n");
+    fprintf(stderr,"Entered reap Child\n");
     if (getpid() != script_pid)
     {
         return;
@@ -15,7 +15,7 @@ void reapChild(int signum)
     {
         //printf("IN LOOP\n");
         pid_t suspected_pid = waitpid(-1, &stat_loc, WNOHANG | WUNTRACED);
-        printf("Suspected pid is %d\n", suspected_pid);
+        fprintf(stderr,"Suspected pid is %d\n", suspected_pid);
         if (suspected_pid <= 0)
         {
             /*if WNOHANG was specified and one or more
@@ -50,7 +50,7 @@ void reapChild(int signum)
                         if (WIFEXITED(stat_loc))
                         {
                             jobs_ptr[i]->is_relevant = 0;
-                            printf("made is relevant as 0\n");
+                            //printf("made is relevant as 0\n");
 
                             if (WEXITSTATUS(stat_loc) == EXIT_SUCCESS)
                             {

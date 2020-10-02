@@ -1,8 +1,0 @@
-Done 2
-Done 3
-shift done
-Dealt with fds
-trying to shift
-failure to shift
-args supplied after removal of redirection tokens is 
-ls

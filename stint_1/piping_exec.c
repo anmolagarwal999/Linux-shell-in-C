@@ -259,7 +259,7 @@ void handle_system_cmd_piped(struct cmd_var *ptr)
         //to do, implement foreground/background tcsetgrp to prevent terminal hogging by bg
 
         //restoring the cntrl C default behaviour
-        printf("Default restored\n");
+        //printf("Default restored\n");
         signal(SIGINT, SIG_DFL);
         signal(SIGTSTP, SIG_DFL);
 
@@ -316,7 +316,7 @@ void handle_system_cmd_piped(struct cmd_var *ptr)
             int fg_stat_ptr;
             short stat_temp = waitpid(child_pid, &fg_stat_ptr, WUNTRACED);
 
-            printf("fg_stat after waitpid is is %d\n", fg_stat_ptr);
+            fprintf(stderr, "fg_stat after waitpid is is %d\n", fg_stat_ptr);
 
             if (stat_temp == -1)
             {
@@ -335,7 +335,7 @@ void handle_system_cmd_piped(struct cmd_var *ptr)
             signal(SIGTTIN, SIG_DFL);
             //exit(0);
 
-            printf("Wait over\n");
+            fprintf(stderr, "Wait over\n");
             curr_fg_pid = -1;
 
             /* WIFSTOPPED(wstatus)
@@ -350,16 +350,21 @@ void handle_system_cmd_piped(struct cmd_var *ptr)
             }
             else if (WIFEXITED(fg_stat_ptr))
             {
-
+                fprintf(stderr, "Process was exited\n");
                 if (WEXITSTATUS(fg_stat_ptr) == EXIT_SUCCESS)
                 {
                     //legendary is 1
+                    fprintf(stderr, "Exit was successful\n");
                 }
                 else
                 {
-                    fprintf(stderr, "foreground process exitted abnormally->legendary=0\n");
+                    fprintf(stderr, "foreground process exited abnormally->legendary=0\n");
                     is_legendary = 0;
                 }
+            }
+            else
+            {
+                is_legendary = 0;
             }
         }
         else
@@ -504,7 +509,9 @@ void exec_simple_cmd(struct simple_cmd *ptr)
     {
         //Multiple redirections, out of scope
         err_yellow_color();
-        fprintf(stderr, "Multiple redirections -> out of scope as TA said\n");
+        fprintf(stderr, "Multiple redirections -> unacceptable\n");
+        is_legendary = 0;
+
         err_reset_color();
         goto restoration;
     }
@@ -514,6 +521,8 @@ void exec_simple_cmd(struct simple_cmd *ptr)
     {
         if (ptr->input_file_name == NULL)
         {
+            is_legendary = 0;
+
             fprintf(stderr, "No argument supplied for input redirection\n");
             input_from_file = 0;
             goto restoration;
@@ -524,6 +533,8 @@ void exec_simple_cmd(struct simple_cmd *ptr)
 
             if (proposed_fd_in < 0)
             {
+                is_legendary = 0;
+
                 perror("Error while opening input file");
                 input_from_file = 0;
                 goto restoration;
@@ -537,6 +548,8 @@ void exec_simple_cmd(struct simple_cmd *ptr)
     {
         if (ptr->output_file_name == NULL)
         {
+            is_legendary = 0;
+
             fprintf(stderr, "No argument supplied for output redirection\n");
             output_to_file = 0;
 
@@ -547,6 +560,8 @@ void exec_simple_cmd(struct simple_cmd *ptr)
             proposed_fd_out = open(ptr->output_file_name, O_WRONLY | O_TRUNC | O_CREAT, 0644);
             if (proposed_fd_out < 0)
             {
+                is_legendary = 0;
+
                 perror("Error occurred while dealing with output file ");
                 output_to_file = 0;
 
@@ -565,6 +580,8 @@ void exec_simple_cmd(struct simple_cmd *ptr)
         fflush(stdout);
         if (ptr->append_file_name == NULL)
         {
+            is_legendary = 0;
+
             fprintf(stderr, "No argument supplied for append redirection\n");
             append_to_file = 0;
             goto restoration;
@@ -574,6 +591,8 @@ void exec_simple_cmd(struct simple_cmd *ptr)
             proposed_fd_out = open(ptr->append_file_name, O_WRONLY | O_CREAT | O_APPEND, 0644);
             if (proposed_fd_out < 0)
             {
+                is_legendary = 0;
+
                 perror("Error occurred while dealing with APPEND file ");
                 append_to_file = 0;
                 goto restoration;
@@ -653,6 +672,8 @@ void exec_simple_cmd(struct simple_cmd *ptr)
     if (ptr->simple_args_num == 0)
     {
         err_yellow_color();
+        is_legendary = 0;
+
         fprintf(stderr, "ERROR in shell: empty command\n");
         err_reset_color();
         goto restoration;
@@ -697,6 +718,8 @@ void exec_simple_cmd(struct simple_cmd *ptr)
             //IF CD HAS MORE THAN 2 ARGS, it is a disaster
             if (offload_ptr->arg_num > 2)
             {
+                is_legendary = 0;
+
                 fprintf(stderr, "cd:you supplied too many arguments\n");
             }
             else

@@ -1,20 +1,18 @@
-Dealt with fds
-trying to shift
-tot is 5
-i is 0
-i is 1
-i is 4
-curr_idx is 3
-failure to shift
-args supplied after removal of redirection tokens is 3
-sort
->
-sortedlines.txt
------------------------------------------
-id cmd is 0
-Time to invoke system command
-entered the forking function
-in parent
-going to wait
-wait over
-RETURNED SAFELY
+1
+2
+3
+4
+5
+6
+7
+8
+9
+1
+2
+3
+4
+5
+6
+7
+8
+9

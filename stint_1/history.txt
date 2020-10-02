@@ -1,20 +1,20 @@
+sort < lines1.txt > sortedlines.txt
+sort < lines.txt >> sortedlines.txt
+cat lorem.txt
+more lorem.txt
+more lorem.txt | wc
+more exp1.c | wc
+ more main.c | wc
+more lorem.txt | wc
+more jobs_related.c | wc
+more lorem.txt | wc
+grep "new" temp.txt | cat somefile.txt | wc
+grep "int" main.c | cat echo.c | wc
+ ls | grep .c
+ ls | grep .c > out.txt
+cat < main.c | wc -l > out2.txt
+ ls $ echo penguins
 ls @ echo penguins
-ls $ ls ..
-ls kdoe $ ls ..
-true @ echo ahaddd
-ls
-cd ..
-cd -
-cd kflr
-ls @ jiejdie
-ls @ ps
-ls
-exit
-ls
-./b
-ls
-ls @ ps
-cd .. & ls
-cd .. $ ls
-cd - @ ls
-exit
+ps -Q $ ps -Q $ ls @ echo penguins $ ls
+ps -Q $ ps -Q
+ls @ echo successful $ echo fail
