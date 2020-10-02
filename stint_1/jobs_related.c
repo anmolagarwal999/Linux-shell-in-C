@@ -70,25 +70,31 @@ void exec_jobs_cmd()
 
     for (i = 0; i < n; i++)
     {
-        int curr_stat = get_pid_status(jobs_ptr[i]->pid);
-        if (curr_stat != -1)
+        debug(i);
+        fprintf(stderr, "%s\n", jobs_ptr[i]->cmd_name);
+        fprintf(stderr, "%d\n", jobs_ptr[i]->is_relevant);
+        if (jobs_ptr[i]->is_relevant != 0)
         {
-            //process has not yet terminated -> either it has stopped or it is running
-
-            // [1] Running emacs assign1.txt [221]
-
-            printf("[job_id : %d] ", jobs_ptr[i]->jid);
-
-            if (curr_stat == 1)
+            int curr_stat = get_pid_status(jobs_ptr[i]->pid);
+            if (curr_stat != -1)
             {
-                printf("RUNNING ");
-            }
-            else
-            {
-                printf("STOPPED ");
-            }
+                //process has not yet terminated -> either it has stopped or it is running
 
-            printf(" %s [ pid: %d]", jobs_ptr[i]->cmd_name, jobs_ptr[i]->pid);
+                // [1] Running emacs assign1.txt [221]
+
+                printf("[job_id:%d] ", jobs_ptr[i]->jid);
+
+                if (curr_stat == 1)
+                {
+                    printf("RUNNING ");
+                }
+                else
+                {
+                    printf("STOPPED ");
+                }
+
+                printf(" %s [pid: %d]", jobs_ptr[i]->cmd_name, jobs_ptr[i]->pid);
+            }
         }
     }
 }
@@ -101,8 +107,8 @@ void exec_fg(struct cmd_var *ptr)
     //     char *cmd_args[max_poss_args];
     //     int is_bg;
     // };
-  //  fprintf(stderr, "inside fg\n");
-  //  fprintf(stderr, "number of args are %d\n", ptr->arg_num);
+    //  fprintf(stderr, "inside fg\n");
+    //  fprintf(stderr, "number of args are %d\n", ptr->arg_num);
 
     if (ptr->arg_num != 2)
     {
@@ -124,7 +130,7 @@ void exec_fg(struct cmd_var *ptr)
     if (jobs_ptr[job_idx]->is_relevant == 0)
     {
         is_legendary = 0;
-        fprintf(stderr, "Job with this job id is neither running nor stopped\n");
+        fprintf(stderr, "ERROR: Job with this job id is neither currently running nor stopped\n");
         return;
     }
 
@@ -189,7 +195,7 @@ this signal is ignored by default.
     int fg_stat;
     short stat_temp = waitpid(child_pid, &fg_stat, WUNTRACED);
 
-   // printf("fg_stat after waitpid is is %d\n", fg_stat);
+    // printf("fg_stat after waitpid is is %d\n", fg_stat);
 
     if (stat_temp == -1)
     {
@@ -208,7 +214,7 @@ this signal is ignored by default.
     signal(SIGTTIN, SIG_DFL);
     //exit(0);
 
-   // printf("Wait over\n");
+    // printf("Wait over\n");
     curr_fg_pid = -1;
 
     /* WIFSTOPPED(wstatus)
@@ -228,7 +234,7 @@ this signal is ignored by default.
     else if (WIFEXITED(fg_stat))
     {
         //did the process exit normally? (as opposed to being signalled).
-        fprintf(stderr,"In exit if\n");
+        fprintf(stderr, "In exit if\n");
         jobs_ptr[job_idx]->is_relevant = 0;
 
         if (WEXITSTATUS(fg_stat) == EXIT_SUCCESS)
@@ -237,15 +243,14 @@ this signal is ignored by default.
         }
         else
         {
-           // fprintf(stderr, "foreground process exitted abnormally->legendary=0\n");
+            // fprintf(stderr, "foreground process exitted abnormally->legendary=0\n");
             is_legendary = 0;
         }
     }
     else
     {
-        is_legendary=0;
+        is_legendary = 0;
     }
-    
 
     /////////////////////////////////////////////////////////////////////////////////////
 }
@@ -263,8 +268,8 @@ void exec_bg(struct cmd_var *ptr)
     //     int is_bg;
     // };
 
-  //  fprintf(stderr, "inside bg\n");
-   // fprintf(stderr, "number of args are %d\n", ptr->arg_num);
+    //  fprintf(stderr, "inside bg\n");
+    // fprintf(stderr, "number of args are %d\n", ptr->arg_num);
 
     if (ptr->arg_num != 2)
     {
@@ -319,12 +324,14 @@ void exec_bg(struct cmd_var *ptr)
         //change status to running
         jobs_ptr[job_idx]->cmd_stat = 1;
         curr_stat = get_pid_status(child_pid);
-        if (curr_stat != 1)
-        {
-            yellow_color();
-            printf("WEIRD SHIT IS HAPPENING\n");
-            reset_color();
-        }
+
+        //Commented below as vim gets stopped immediately even after getting bg
+        // if (curr_stat != 1)
+        // {
+        //     yellow_color();
+        //     printf("WEIRD SHIT IS HAPPENING\n");
+        //     reset_color();
+        // }
     }
 }
 
@@ -343,8 +350,8 @@ void exec_kjob(struct cmd_var *ptr)
     //     int is_bg;
     // };
 
-   // fprintf(stderr, "inside kjob\n");
- //   fprintf(stderr, "number of args are %d\n", ptr->arg_num);
+    // fprintf(stderr, "inside kjob\n");
+    //   fprintf(stderr, "number of args are %d\n", ptr->arg_num);
 
     if (ptr->arg_num != 3)
     {
@@ -440,25 +447,24 @@ short get_pid_status(int query_pid)
     strcat(pid_path, "/\0");
     strcat(pid_path, "stat");
     int fd = open(pid_path, O_RDONLY);
-    // printf("fd is %d\n", fd);
+    //printf("fd is %d\n", fd);
 
     if (fd < 0)
     {
-        is_legendary = 0;
+      //  is_legendary = 0;
 
-        perror("Error during opening proc/pid/stat");
+        //perror("Error during opening proc/pid/stat");
         return -1;
     }
     //printf("retriving status2\n");
     char buff[700];
 
     int check_status = read(fd, buff, 600);
-    // printf("check status is %d\n", check_status);
+    //printf("check status is %d\n", check_status);
 
     if (check_status < 0)
     {
-        is_legendary = 0;
-
+       // is_legendary = 0;
         perror("Some error while reading file stat:");
         return -1;
     }
@@ -479,7 +485,7 @@ short get_pid_status(int query_pid)
             token_beg = strtok(NULL, delims);
         }
         close(fd);
-       // printf("retrieved status string is %s\n", token_beg);
+        // printf("retrieved status string is %s\n", token_beg);
         if (token_beg[0] == 'T')
         {
             return 2;

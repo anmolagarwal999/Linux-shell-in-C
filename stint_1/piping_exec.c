@@ -276,7 +276,7 @@ void handle_system_cmd_piped(struct cmd_var *ptr)
         if (success_stat < 0)
         {
             //printf("ERROR while executing the input command\n");
-            perror("Command not found ?\nError details");
+            perror("Error details after execvp");
             // part;
             // exit(0);
             exit(EXIT_FAILURE);
@@ -477,7 +477,7 @@ int get_cmd_id_piped(char *cmd_name)
     {
         id_cmd = 16;
     }
-    else if (strcmp(cmd_name, "job") == 0)
+    else if (strcmp(cmd_name, "jobs") == 0)
     {
         id_cmd = 17;
     }

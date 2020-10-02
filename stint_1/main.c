@@ -38,7 +38,7 @@ void sigint_handler()
     {
         part2;
         red_color();
-        printf("Weird stuff is happening\n");
+        printf("Weird stuff is happening in sigint\n");
         reset_color();
         fflush(stdout);
 
